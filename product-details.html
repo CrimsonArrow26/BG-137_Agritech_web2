@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Marketplace - Product Details</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/product-details.css">
+</head>
+<body>
+    <div id="global-loader" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--background); display:flex; justify-content:center; align-items:center; z-index:9999;">
+        <i class="fa-solid fa-spinner fa-spin fa-3x" style="color:var(--primary);"></i>
+    </div>
+
+    <div id="navbar-container"></div>
+
+    <main class="page-container" style="padding-top: 100px; padding-bottom: 60px;">
+        <div id="pd-container" class="product-details-container" style="display:none;">
+            <!-- Left Side: Image -->
+            <div class="pd-image-col">
+                <img id="pd-img" src="" alt="Product Image" class="pd-main-img">
+            </div>
+            
+            <!-- Right Side: Info -->
+            <div class="pd-info-col">
+                <div class="pd-breadcrumbs"><a href="index.html">Home</a> / <a href="products.html">Products</a> / <span id="pd-bread-cat"></span></div>
+                <h1 id="pd-title" class="pd-title" style="font-family: 'Playfair Display', serif;"></h1>
+                <div class="pd-meta">
+                    <span id="pd-farmer" class="pd-farmer"><i class="fa-solid fa-wheat-awn"></i></span>
+                    <span id="pd-location" class="pd-location"><i class="fa-solid fa-location-dot"></i></span>
+                </div>
+                <div id="pd-price" class="pd-price"></div>
+                
+                <p id="pd-desc" class="pd-desc"></p>
+                
+                <div class="pd-actions">
+                    <div class="qty-selector">
+                        <button id="pd-qty-minus">-</button>
+                        <input type="number" id="pd-qty-input" value="1" min="1" max="99">
+                        <button id="pd-qty-plus">+</button>
+                    </div>
+                    <button id="pd-add-btn" class="btn btn-primary pd-add-btn">
+                        <i class="fa-solid fa-cart-shopping"></i> Add to Cart
+                    </button>
+                </div>
+                
+                <div class="pd-guarantees">
+                    <div class="pd-guarantee-item"><i class="fa-solid fa-leaf text-success"></i> 100% Organic Quality</div>
+                    <div class="pd-guarantee-item"><i class="fa-solid fa-shield-halved text-success"></i> Farm Fresh Guarantee</div>
+                    <div class="pd-guarantee-item"><i class="fa-solid fa-truck-fast text-success"></i> Prompt Local Delivery</div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="pd-error" class="product-error" style="display:none; text-align:center; padding: 50px;">
+            <i class="fa-solid fa-circle-exclamation fa-3x" style="color:var(--danger); margin-bottom:15px;"></i>
+            <h2>Product Not Found</h2>
+            <p style="color:var(--text-muted);">The product you are looking for does not exist or has been removed.</p>
+            <a href="products.html" class="btn btn-primary border-radius-sm" style="margin-top:20px; display:inline-block;">Back to Products</a>
+        </div>
+    </main>
+
+    <div id="footer-container"></div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/product-details.js"></script>
+</body>
+</html>

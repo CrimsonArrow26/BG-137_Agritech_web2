@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Marketplace - My Profile</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/profile.css">
+</head>
+<body>
+    <div id="global-loader" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--background); display:flex; justify-content:center; align-items:center; z-index:9999;">
+        <i class="fa-solid fa-spinner fa-spin fa-3x" style="color:var(--primary);"></i>
+    </div>
+
+    <div id="navbar-container"></div>
+
+    <main class="page-container" style="padding-top: 100px; padding-bottom: 60px;">
+        <div class="profile-layout">
+            
+            <!-- Left sidebar -->
+            <div class="profile-sidebar">
+                <div class="profile-avatar">
+                    <img id="prof-img" src="" alt="Profile">
+                    <h3 id="prof-sidebar-name">User Name</h3>
+                    <div id="prof-sidebar-role" class="prof-role-badge">Role</div>
+                </div>
+                <ul class="profile-nav">
+                    <li><a href="#" class="active"><i class="fa-solid fa-user"></i> Account Details</a></li>
+                    <li><a href="orders.html"><i class="fa-solid fa-box-open"></i> My Orders</a></li>
+                    <li><a href="dashboard.html"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
+                </ul>
+            </div>
+            
+            <!-- Right Content -->
+            <div class="profile-content">
+                <div class="profile-card">
+                    <h2>Account Information</h2>
+                    <p style="color:var(--text-muted); margin-bottom:20px;">Manage your personal settings.</p>
+                    
+                    <form id="profileForm">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" id="profName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email Address</label>
+                            <input type="email" id="profEmail" disabled title="Email cannot be changed">
+                        </div>
+                        <div class="form-group">
+                            <label>Role</label>
+                            <input type="text" id="profRole" disabled style="text-transform: capitalize;">
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <div id="footer-container"></div>
+
+    <!-- Scripts -->
+    <script src="js/utils.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/profile.js"></script>
+</body>
+</html>

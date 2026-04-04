@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Marketplace - Login</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/auth.css">
+</head>
+<body style="display: flex; align-items: center; justify-content: center; min-height: 100vh; background: linear-gradient(135deg, var(--bg-offset), var(--background)); font-family: 'Roboto', sans-serif;">
+    <div class="auth-container" style="background: var(--background); padding: 40px; border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center;">
+        <div style="margin-bottom: 30px;">
+            <i class="fa-solid fa-leaf fa-3x" style="color: var(--primary);"></i>
+            <h2 style="font-family: 'Playfair Display', serif; color: var(--primary); margin-top: 15px; font-size: 2rem;">Welcome Back</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">Sign in to your farmer marketplace account</p>
+        </div>
+        <form id="loginForm" style="text-align: left;">
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px; color: var(--text-main); font-weight: 500;">Email</label>
+                <input type="email" id="loginEmail" required style="width: 100%; padding: 12px 15px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-offset); color: var(--text-main); font-size: 1rem; outline: none; transition: border-color 0.3s; box-sizing: border-box;" placeholder="Enter your email">
+            </div>
+            <div class="form-group" style="margin-bottom: 25px;">
+                <label style="display: block; margin-bottom: 8px; color: var(--text-main); font-weight: 500;">Password</label>
+                <input type="password" id="loginPassword" required style="width: 100%; padding: 12px 15px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-offset); color: var(--text-main); font-size: 1rem; outline: none; transition: border-color 0.3s; box-sizing: border-box;" placeholder="Enter your password">
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 14px; font-size: 1.1rem; border-radius: 30px; font-weight: 500; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(45, 106, 79, 0.3);">Login</button>
+        </form>
+        <p style="margin-top: 25px; color: var(--text-muted);">Don't have an account? <a href="signup.html" style="color: var(--primary); font-weight: 500; text-decoration: none;">Sign up</a></p>
+        <div style="margin-top: 20px;">
+            <a href="index.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; transition: color 0.3s;">
+                <i class="fa-solid fa-arrow-left"></i> Back to Home
+            </a>
+        </div>
+    </div>
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+</body>
+</html>

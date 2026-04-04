@@ -1,499 +1,64 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AgriMarket - Farming Marketplace</title>
+    <title>Farmer Marketplace - Home</title>
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Styles -->
-    <link rel="stylesheet" href="style.css">
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" href="css/footer.css">
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="#" class="nav-logo" data-target="home-section">
-                <i class="fas fa-leaf"></i> AgriMarket
+    <!-- Global Loader -->
+    <div id="global-loader" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--background); display:flex; justify-content:center; align-items:center; z-index:9999; transition: opacity 0.3s ease;">
+        <i class="fa-solid fa-seedling fa-spin fa-3x" style="color:var(--primary);"></i>
+    </div>
+
+    <div id="navbar-container"></div>
+
+    <main>
+        <section class="hero-section" style="padding: 100px 20px; text-align: center; background: linear-gradient(135deg, var(--bg-offset), var(--background));">
+            <h1 style="font-size: 3.5rem; margin-bottom: 20px; color: var(--primary); font-family: 'Playfair Display', serif;">Fresh from Farm to Table</h1>
+            <p style="font-size: 1.2rem; color: var(--text-muted); max-width: 600px; margin: 0 auto 30px; line-height: 1.6;">Discover the finest organic produce straight from local farmers. Sustainable, fresh, and delivered to your doorstep.</p>
+            <a href="products.html" class="btn" style="padding: 15px 35px; font-size: 1.1rem; background: var(--primary); color: white; border-radius: 30px; text-decoration: none; display: inline-block; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(45, 106, 79, 0.3); font-weight: 500;">
+                <i class="fa-solid fa-basket-shopping"></i> Shop Now
             </a>
-            
-            <div class="nav-menu" id="nav-menu">
-                <a href="#" class="nav-link active" data-target="home-section">Home</a>
-                <a href="#" class="nav-link" data-target="marketplace-section">Marketplace</a>
-                <a href="#" class="nav-link" data-target="dashboard-section">Dashboard</a>
-                <a href="#" class="nav-link" data-target="chat-section">Chat</a>
-            </div>
-
-            <div class="nav-icons">
-                <button class="icon-btn" id="themeToggleBtn" aria-label="Toggle Dark Mode">
-                    <i class="fas fa-moon"></i>
-                </button>
-                <button class="icon-btn" id="notifToggleBtn" aria-label="Notifications">
-                    <i class="fas fa-bell"></i>
-                    <span class="badge">3</span>
-                </button>
-                <div class="dropdown">
-                    <button class="icon-btn profile-btn dropdown-toggle" aria-label="User Profile">
-                        <img src="https://placehold.co/40x40/2e7d32/white?text=U" alt="User" class="avatar-sm">
-                    </button>
-                    <div class="dropdown-menu">
-                        <a href="#" data-target="profile-section"><i class="fas fa-user-circle"></i> Profile</a>
-                        <a href="#" data-target="settings-section"><i class="fas fa-cog"></i> Settings</a>
-                        <div class="divider"></div>
-                        <a href="#" data-target="auth-section" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
-                    </div>
-                </div>
-                <button class="mobile-menu-btn" id="mobileMenuBtn">
-                    <i class="fas fa-bars"></i>
-                </button>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Main Content Area -->
-    <main class="main-content">
-
-        <!-- Home Section -->
-        <section id="home-section" class="page-section active">
-            <div class="hero">
-                <div class="hero-content">
-                    <h1>Connecting Farmers Directly to Buyers</h1>
-                    <p>Fresh organic produce, grains, and dairy from farm to table. Transparent, fast, and fair.</p>
-                    <div class="hero-buttons">
-                        <button class="btn btn-primary" data-target="marketplace-section">Start Buying</button>
-                        <button class="btn btn-outline" data-target="dashboard-section">Start Selling</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="container section-padding">
-                <h2 class="section-title">Shop by Category</h2>
-                <div class="categories-grid">
-                    <div class="category-card" onclick="filterCategory('Vegetables')">
-                        <i class="fas fa-carrot"></i>
-                        <h3>Vegetables</h3>
-                    </div>
-                    <div class="category-card" onclick="filterCategory('Fruits')">
-                        <i class="fas fa-apple-alt"></i>
-                        <h3>Fruits</h3>
-                    </div>
-                    <div class="category-card" onclick="filterCategory('Grains')">
-                        <i class="fas fa-seedling"></i>
-                        <h3>Grains</h3>
-                    </div>
-                    <div class="category-card" onclick="filterCategory('Dairy')">
-                        <i class="fas fa-cheese"></i>
-                        <h3>Dairy</h3>
-                    </div>
-                </div>
-            </div>
         </section>
 
-        <!-- Auth Section -->
-        <section id="auth-section" class="page-section">
-            <div class="auth-container">
-                <div class="auth-card">
-                    <div class="auth-tabs">
-                        <button class="auth-tab active" id="tabLogin">Login</button>
-                        <button class="auth-tab" id="tabSignup">Sign Up</button>
-                    </div>
-
-                    <!-- Login Form -->
-                    <form id="loginForm" class="auth-form active">
-                        <h2>Welcome Back</h2>
-                        <div class="form-group">
-                            <label>Email Address</label>
-                            <input type="email" id="loginEmail" required placeholder="Enter email">
-                        </div>
-                        <div class="form-group">
-                            <label>Password</label>
-                            <input type="password" id="loginPass" required placeholder="Enter password">
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-full">Login</button>
-                    </form>
-
-                    <!-- Signup Form -->
-                    <form id="signupForm" class="auth-form">
-                        <h2>Create Account</h2>
-                        <p class="error-msg" id="signupError"></p>
-                        <div class="form-group">
-                            <label>Full Name</label>
-                            <input type="text" id="signupName" required placeholder="John Doe">
-                        </div>
-                        <div class="form-group">
-                            <label>Email Address</label>
-                            <input type="email" id="signupEmail" required placeholder="Email">
-                        </div>
-                        <div class="form-group">
-                            <label>Password</label>
-                            <input type="password" id="signupPass" required placeholder="Password">
-                        </div>
-                        <div class="form-group">
-                            <label>Account Type</label>
-                            <select id="signupRole" required>
-                                <option value="buyer">Buyer</option>
-                                <option value="farmer">Farmer</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-full">Register</button>
-                    </form>
+        <section class="features-section" style="padding: 80px 20px; max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px;">
+            <div class="feature-card" style="text-align:center; padding: 40px 30px; border-radius: 16px; background: var(--bg-offset); box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: transform 0.3s ease;">
+                <div style="width: 80px; height: 80px; background: rgba(45, 106, 79, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: var(--primary);">
+                    <i class="fa-solid fa-leaf fa-2x"></i>
                 </div>
+                <h3 style="font-size: 1.5rem; margin-bottom: 15px; color: var(--text-main);">100% Organic</h3>
+                <p style="color: var(--text-muted); line-height: 1.6;">We ensure all our listed farmers meet strict organic farming standards without harmful chemicals.</p>
+            </div>
+            <div class="feature-card" style="text-align:center; padding: 40px 30px; border-radius: 16px; background: var(--bg-offset); box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: transform 0.3s ease;">
+                <div style="width: 80px; height: 80px; background: rgba(45, 106, 79, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: var(--primary);">
+                    <i class="fa-solid fa-truck-fast fa-2x"></i>
+                </div>
+                <h3 style="font-size: 1.5rem; margin-bottom: 15px; color: var(--text-main);">Fast Delivery</h3>
+                <p style="color: var(--text-muted); line-height: 1.6;">From the farm directly to your kitchen within 24 hours to maintain ultimate freshness.</p>
+            </div>
+            <div class="feature-card" style="text-align:center; padding: 40px 30px; border-radius: 16px; background: var(--bg-offset); box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: transform 0.3s ease;">
+                <div style="width: 80px; height: 80px; background: rgba(45, 106, 79, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: var(--primary);">
+                    <i class="fa-solid fa-handshake fa-2x"></i>
+                </div>
+                <h3 style="font-size: 1.5rem; margin-bottom: 15px; color: var(--text-main);">Fair Trade</h3>
+                <p style="color: var(--text-muted); line-height: 1.6;">We eliminate the middlemen so that our farmers get the true and fair value of their hard work.</p>
             </div>
         </section>
-
-        <!-- Marketplace Section -->
-        <section id="marketplace-section" class="page-section">
-            <div class="container section-padding">
-                <div class="marketplace-header">
-                    <h2 class="section-title">Marketplace</h2>
-                    <button class="btn btn-primary" id="openAddProductModalBtn"><i class="fas fa-plus"></i> Add Product</button>
-                </div>
-
-                <div class="filter-bar">
-                    <div class="search-box">
-                        <i class="fas fa-search"></i>
-                        <input type="text" id="searchInput" placeholder="Search products...">
-                    </div>
-                    <select id="categoryFilter" class="filter-select">
-                        <option value="All">All Categories</option>
-                        <option value="Vegetables">Vegetables</option>
-                        <option value="Fruits">Fruits</option>
-                        <option value="Grains">Grains</option>
-                        <option value="Dairy">Dairy</option>
-                    </select>
-                    <select id="priceFilter" class="filter-select">
-                        <option value="default">Sort by Price</option>
-                        <option value="low">Low to High</option>
-                        <option value="high">High to Low</option>
-                    </select>
-                </div>
-
-                <div class="products-grid" id="productsGrid">
-                    <!-- Products injected via JS -->
-                </div>
-            </div>
-        </section>
-
-        <!-- Dashboard Section -->
-        <section id="dashboard-section" class="page-section">
-            <div class="container section-padding">
-                <h2 class="section-title">Dashboard</h2>
-                
-                <div class="dashboard-tabs">
-                    <button class="dashboard-tab active" data-dash="farmer-dash">Farmer View</button>
-                    <button class="dashboard-tab" data-dash="buyer-dash">Buyer View</button>
-                </div>
-
-                <!-- Farmer Dashboard -->
-                <div id="farmer-dash" class="dash-view active">
-                    <div class="dash-stats">
-                        <div class="stat-card">
-                            <h3>Total Listings</h3>
-                            <p class="stat-value">12</p>
-                        </div>
-                        <div class="stat-card">
-                            <h3>Pending Orders</h3>
-                            <p class="stat-value">3</p>
-                        </div>
-                        <div class="stat-card">
-                            <h3>Total Revenue</h3>
-                            <p class="stat-value">$1,250</p>
-                        </div>
-                    </div>
-                    <h3>Recent Orders Received</h3>
-                    <div class="table-responsive">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Order ID</th>
-                                    <th>Product</th>
-                                    <th>Buyer</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>#ORD-001</td>
-                                    <td>Organic Tomatoes</td>
-                                    <td>Jane Smith</td>
-                                    <td><span class="status pending">Pending</span></td>
-                                    <td>
-                                        <button class="btn btn-sm btn-success">Approve</button>
-                                        <button class="btn btn-sm btn-danger">Reject</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>#ORD-002</td>
-                                    <td>Fresh Apples</td>
-                                    <td>Mike Johnson</td>
-                                    <td><span class="status approved">Approved</span></td>
-                                    <td><button class="btn btn-sm btn-outline">Message</button></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Buyer Dashboard -->
-                <div id="buyer-dash" class="dash-view">
-                    <h3>My Order Requests</h3>
-                    <div class="table-responsive">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Order ID</th>
-                                    <th>Product</th>
-                                    <th>Farmer</th>
-                                    <th>Status</th>
-                                    <th>Total</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>#ORD-003</td>
-                                    <td>Wheat Grains (50kg)</td>
-                                    <td>John Doe Farms</td>
-                                    <td><span class="status pending">Pending</span></td>
-                                    <td>$75.00</td>
-                                </tr>
-                                <tr>
-                                    <td>#ORD-004</td>
-                                    <td>Cow Milk (10L)</td>
-                                    <td>Green Pastures</td>
-                                    <td><span class="status approved">Approved</span></td>
-                                    <td>$15.00</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Profile Section -->
-        <section id="profile-section" class="page-section">
-            <div class="container section-padding">
-                <div class="profile-container">
-                    <h2 class="section-title">My Profile</h2>
-                    <form id="profileForm" class="profile-form">
-                        <div class="profile-avatar-upload">
-                            <img src="https://placehold.co/120x120/2e7d32/white?text=U" alt="Profile" id="profileImagePreview">
-                            <label for="avatarUpload" class="upload-btn"><i class="fas fa-camera"></i> Change Photo</label>
-                            <input type="file" id="avatarUpload" accept="image/*" hidden>
-                        </div>
-                        
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label>Full Name</label>
-                                <input type="text" value="User Name" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Phone Number</label>
-                                <input type="tel" placeholder="+1 234 567 8900">
-                            </div>
-                            <div class="form-group">
-                                <label>Location</label>
-                                <input type="text" placeholder="City, State">
-                            </div>
-                            <div class="form-group">
-                                <label>Farming Type / Interest</label>
-                                <select>
-                                    <option>Organic Farming</option>
-                                    <option>Commercial</option>
-                                    <option>Buyer Only</option>
-                                </select>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Save Changes</button>
-                    </form>
-                </div>
-            </div>
-        </section>
-
-        <!-- Settings Section -->
-        <section id="settings-section" class="page-section">
-            <div class="container section-padding">
-                <div class="settings-container">
-                    <h2 class="section-title">Settings</h2>
-                    
-                    <div class="settings-card">
-                        <h3>Change Password</h3>
-                        <form class="settings-form">
-                            <div class="form-group">
-                                <label>Current Password</label>
-                                <input type="password">
-                            </div>
-                            <div class="form-group">
-                                <label>New Password</label>
-                                <input type="password">
-                            </div>
-                            <button type="submit" class="btn btn-primary">Update Password</button>
-                        </form>
-                    </div>
-
-                    <div class="settings-card">
-                        <h3>Preferences</h3>
-                        <div class="preference-item">
-                            <div class="pref-info">
-                                <h4>Email Notifications</h4>
-                                <p>Receive updates about orders and messages.</p>
-                            </div>
-                            <label class="toggle-switch">
-                                <input type="checkbox" checked>
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                        <div class="preference-item">
-                            <div class="pref-info">
-                                <h4>Language</h4>
-                            </div>
-                            <select class="settings-select">
-                                <option>English</option>
-                                <option>Spanish</option>
-                                <option>French</option>
-                                <option>Hindi</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Chat Section -->
-        <section id="chat-section" class="page-section">
-            <div class="container section-padding">
-                <div class="chat-container">
-                    <div class="chat-sidebar">
-                        <div class="chat-search">
-                            <input type="text" placeholder="Search chats...">
-                        </div>
-                        <div class="chat-list">
-                            <div class="chat-list-item active">
-                                <img src="https://placehold.co/40x40/4caf50/white?text=JD" alt="User">
-                                <div class="chat-list-info">
-                                    <h4>John Doe Farms</h4>
-                                    <p>Are the tomatoes fresh?</p>
-                                </div>
-                            </div>
-                            <div class="chat-list-item">
-                                <img src="https://placehold.co/40x40/ff9800/white?text=MS" alt="User">
-                                <div class="chat-list-info">
-                                    <h4>Mike Smith</h4>
-                                    <p>Thanks for the order.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="chat-main">
-                        <div class="chat-header">
-                            <img src="https://placehold.co/40x40/4caf50/white?text=JD" alt="User">
-                            <h3>John Doe Farms</h3>
-                        </div>
-                        <div class="chat-messages" id="chatMessages">
-                            <div class="message received">
-                                <p>Hello! I am interested in buying 50kg of tomatoes.</p>
-                                <span class="time">10:00 AM</span>
-                            </div>
-                            <div class="message sent">
-                                <p>Hi! Yes, we have them in stock. The total will be $100.</p>
-                                <span class="time">10:05 AM</span>
-                            </div>
-                        </div>
-                        <div class="chat-input-area">
-                            <input type="text" id="chatInputMessage" placeholder="Type a message...">
-                            <button class="btn btn-primary" id="sendMsgBtn"><i class="fas fa-paper-plane"></i></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
     </main>
 
-    <!-- Side Panels & Modals -->
+    <div id="footer-container"></div>
 
-    <!-- Notifications Panel -->
-    <div class="notifications-panel" id="notificationsPanel">
-        <div class="panel-header">
-            <h3>Notifications</h3>
-            <button class="close-btn" id="closeNotifBtn"><i class="fas fa-times"></i></button>
-        </div>
-        <div class="panel-body">
-            <div class="notification-item unread">
-                <div class="icon bg-green"><i class="fas fa-check"></i></div>
-                <div class="notif-content">
-                    <p>Order <strong>#ORD-001</strong> was approved.</p>
-                    <span>2 mins ago</span>
-                </div>
-            </div>
-            <div class="notification-item unread">
-                <div class="icon bg-blue"><i class="fas fa-envelope"></i></div>
-                <div class="notif-content">
-                    <p>New message from John Doe.</p>
-                    <span>1 hour ago</span>
-                </div>
-            </div>
-            <div class="notification-item">
-                <div class="icon bg-orange"><i class="fas fa-box"></i></div>
-                <div class="notif-content">
-                    <p>Your listing "Fresh Apples" is live.</p>
-                    <span>1 day ago</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Add Product Modal -->
-    <div class="modal" id="addProductModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Add New Product</h2>
-                <button class="close-btn" id="closeAddProductModal"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="modal-body">
-                <form id="addProductForm">
-                    <div class="form-group">
-                        <label>Product Name</label>
-                        <input type="text" id="prodName" required placeholder="e.g. Organic Tomatoes">
-                    </div>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Category</label>
-                            <select id="prodCategory" required>
-                                <option value="Vegetables">Vegetables</option>
-                                <option value="Fruits">Fruits</option>
-                                <option value="Grains">Grains</option>
-                                <option value="Dairy">Dairy</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Price ($)</label>
-                            <input type="number" id="prodPrice" required placeholder="0.00" step="0.01">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Location</label>
-                        <input type="text" id="prodLoc" required placeholder="e.g. California">
-                    </div>
-                    <div class="form-group">
-                        <label>Product Image URL</label>
-                        <input type="url" id="prodImage" placeholder="https://placehold.co/...">
-                    </div>
-                    <div class="form-group">
-                        <label>Description</label>
-                        <textarea id="prodDesc" rows="3" placeholder="Describe your product..."></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-full">Submit Product</button>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <div class="overlay" id="overlay"></div>
-
-    <script src="script.js"></script>
+    <!-- Scripts -->
+    <script src="js/utils.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>

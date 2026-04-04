@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Marketplace - Products</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/products.css">
+</head>
+<body>
+    <div id="global-loader" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--background); display:flex; justify-content:center; align-items:center; z-index:9999;">
+        <i class="fa-solid fa-seedling fa-spin fa-3x" style="color:var(--primary);"></i>
+    </div>
+
+    <div id="navbar-container"></div>
+
+    <main class="page-container" style="padding-top: 100px; padding-bottom: 60px;">
+        <div class="product-header" style="text-align: center; margin-bottom: 40px;">
+            <h1 style="color: var(--primary); font-family: 'Playfair Display', serif; font-size: 2.5rem;">Fresh Produce</h1>
+            <p style="color: var(--text-muted); font-size: 1.1rem; margin-top: 10px;">Browse our fresh selection of organic goods</p>
+        </div>
+        
+        <div class="filters-container" style="display:flex; justify-content:center; gap:15px; margin-bottom:40px; flex-wrap:wrap;">
+            <div style="position: relative;">
+                <i class="fa-solid fa-search" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+                <input type="text" id="searchInput" placeholder="Search products..." style="padding: 12px 15px 12px 40px; border-radius: 30px; border: 1px solid var(--border); background: var(--bg-offset); color: var(--text-main); width:300px; max-width: 100%; font-size: 1rem; outline: none; transition: border-color 0.3s;">
+            </div>
+            <select id="categoryFilter" style="padding: 12px 20px; border-radius: 30px; border: 1px solid var(--border); background: var(--bg-offset); color: var(--text-main); font-size: 1rem; outline: none; cursor: pointer;">
+                <option value="all">All Categories</option>
+                <option value="vegetables">Vegetables</option>
+                <option value="fruits">Fruits</option>
+                <option value="dairy">Dairy</option>
+            </select>
+        </div>
+
+        <div id="productsGrid" class="products-grid">
+            <!-- Dynamically injected via JS -->
+        </div>
+    </main>
+
+    <div id="footer-container"></div>
+
+    <!-- Scripts -->
+    <script src="js/utils.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/products.js"></script>
+</body>
+</html>

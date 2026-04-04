@@ -1,0 +1,50 @@
+<nav class="navbar">
+    <div class="container nav-container">
+        <a href="index.html" class="nav-brand">
+            <i class="fa-solid fa-leaf"></i>
+            FarmConnect
+        </a>
+
+        <div class="nav-links" id="navLinks">
+            <a href="index.html" class="nav-link" id="nav-home">Home</a>
+            <a href="products.html" class="nav-link" id="nav-products">Marketplace</a>
+            <a href="about.html" class="nav-link" id="nav-about">About</a>
+            <a href="contact.html" class="nav-link" id="nav-contact">Contact</a>
+        </div>
+
+        <div class="nav-actions">
+            <!-- Global Utils -->
+            <button class="icon-btn" id="darkModeToggle" title="Toggle Dark Mode">
+                <i class="fa-solid fa-moon"></i>
+            </button>
+            <a href="cart.html" class="icon-btn" title="View Cart">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span class="cart-count" id="navCartCount" style="display: none;">0</span>
+            </a>
+
+            <!-- Unauthenticated -->
+            <div id="unauth-actions" style="display:flex; gap:1rem; align-items:center;">
+                <a href="login.html" class="btn btn-outline" style="padding: 0.5rem 1rem;">Login</a>
+                <a href="signup.html" class="btn btn-primary" style="padding: 0.5rem 1rem;">Sign Up</a>
+            </div>
+
+            <!-- Authenticated User Menu -->
+            <div id="auth-actions" class="user-menu" style="display:none;">
+                <img src="" alt="User" id="navUserImg">
+                <span id="navUserName">User</span>
+                <i class="fa-solid fa-chevron-down" style="font-size: 0.8rem;"></i>
+                
+                <div class="dropdown">
+                    <a href="dashboard.html"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+                    <a href="orders.html"><i class="fa-solid fa-box"></i> My Orders</a>
+                    <a href="profile.html"><i class="fa-solid fa-user"></i> Profile Details</a>
+                    <a href="#" id="logoutBtn" style="color: var(--danger); border-top: 1px solid var(--border-color);"><i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out</a>
+                </div>
+            </div>
+
+            <button class="mobile-toggle" id="mobileToggle">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </div>
+</nav>
