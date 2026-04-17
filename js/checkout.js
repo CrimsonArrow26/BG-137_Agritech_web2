@@ -54,26 +54,43 @@ function renderOrderSummary(cartItems) {
 
 async function createRazorpayOrder(amountInr) {
   const { data: { session } } = await supabase.auth.getSession();
+  if (!session) {
+    throw new Error('You must be logged in to make a payment. Please log in again.');
+  }
+  console.log('Session found, token:', session.access_token?.slice(0, 20) + '...');
+
   const { data, error } = await supabase.functions.invoke('create-razorpay-order', {
-    body: { amount: amountInr },
-    headers: {
-      Authorization: `Bearer ${session?.access_token}`
-    }
+    body: { amount: amountInr }
   });
-  if (error) throw new Error('Could not initiate payment. Please try again.');
+
+  console.log('Edge Function response:', { data, error });
+
+  if (error) {
+    console.error('Edge Function error details:', error);
+    if (error.message?.includes('401') || error.message?.includes('Unauthorized')) {
+      throw new Error('Authentication failed. Please log out and log in again.');
+    }
+    throw new Error('Could not initiate payment. Please try again.');
+  }
   if (data?.error) throw new Error(data.error);
   return data; // { order_id, amount (paise), currency, key_id }
 }
 
 async function verifyRazorpayPayment(razorpay_order_id, razorpay_payment_id, razorpay_signature) {
   const { data: { session } } = await supabase.auth.getSession();
+  if (!session) {
+    throw new Error('Session expired. Please log in again.');
+  }
+
   const { data, error } = await supabase.functions.invoke('verify-razorpay-payment', {
-    body: { razorpay_order_id, razorpay_payment_id, razorpay_signature },
-    headers: {
-      Authorization: `Bearer ${session?.access_token}`
-    }
+    body: { razorpay_order_id, razorpay_payment_id, razorpay_signature }
   });
-  if (error || !data?.verified) {
+
+  if (error) {
+    console.error('Verify payment error:', error);
+    throw new Error('Payment verification failed. Please contact support.');
+  }
+  if (!data?.verified) {
     throw new Error('Payment verification failed. Please contact support.');
   }
   return true;
@@ -224,7 +241,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     placeOrderBtn.innerHTML = 'Pay Now &nbsp;<i class="fa-solid fa-lock"></i>';
   }
 
-  // 6. Card number / expiry formatting (kept for visual, modal handles actual capture)
+  // 6. Input formatting and validation
   const cardNum = document.getElementById('chkCardNum');
   if (cardNum) {
     cardNum.addEventListener('input', function () {
@@ -240,6 +257,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+  // Phone: only 10 digits
+  const phoneEl = document.getElementById('chkPhone');
+  if (phoneEl) {
+    phoneEl.addEventListener('input', function () {
+      this.value = this.value.replace(/\D/g, '').slice(0, 10);
+    });
+  }
+
+  // Pincode: only 6 digits
+  const zipEl = document.getElementById('chkZip');
+  if (zipEl) {
+    zipEl.addEventListener('input', function () {
+      this.value = this.value.replace(/\D/g, '').slice(0, 6);
+    });
+  }
+
   // 7. Form submission — Razorpay flow
   const checkoutForm = document.getElementById('checkoutForm');
   if (!checkoutForm) return;
@@ -250,9 +283,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     const address = document.getElementById('chkAddress')?.value.trim() || '';
     const city    = document.getElementById('chkCity')?.value.trim()    || '';
     const zip     = document.getElementById('chkZip')?.value.trim()     || '';
+    const phone   = document.getElementById('chkPhone')?.value.trim()   || '';
 
-    if (!address || !city || !zip) {
+    if (!address || !city || !zip || !phone) {
       Utils.showToast('Please fill in all shipping fields.', 'error');
+      return;
+    }
+
+    if (phone.length !== 10) {
+      Utils.showToast('Phone number must be exactly 10 digits.', 'error');
+      return;
+    }
+
+    if (zip.length !== 6) {
+      Utils.showToast('Pincode must be exactly 6 digits.', 'error');
       return;
     }
 

@@ -35,6 +35,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('profName').value = profile.full_name;
     document.getElementById('profEmail').value = user.email;
     document.getElementById('profRole').value = profile.role;
+    document.getElementById('profPhone').value = profile.phone || '';
+    document.getElementById('profAddress').value = profile.address || '';
+    document.getElementById('profPincode').value = profile.pincode || '';
+
+    // Add input validation
+    const phoneInput = document.getElementById('profPhone');
+    const pincodeInput = document.getElementById('profPincode');
+
+    phoneInput.addEventListener('input', (e) => {
+      e.target.value = e.target.value.replace(/\D/g, '').slice(0, 10);
+    });
+
+    pincodeInput.addEventListener('input', (e) => {
+      e.target.value = e.target.value.replace(/\D/g, '').slice(0, 6);
+    });
 
     // Handle Form Submit
     const form = document.getElementById('profileForm');
@@ -49,7 +64,28 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         try {
           const newName = document.getElementById('profName').value.trim();
-          await updateProfile({ full_name: newName });
+          const phone = document.getElementById('profPhone').value.trim();
+          const address = document.getElementById('profAddress').value.trim();
+          const pincode = document.getElementById('profPincode').value.trim();
+
+          // Validate phone (10 digits)
+          if (phone && phone.length !== 10) {
+            Utils.showToast('Phone number must be exactly 10 digits', 'error');
+            return;
+          }
+
+          // Validate pincode (6 digits)
+          if (pincode && pincode.length !== 6) {
+            Utils.showToast('Pincode must be exactly 6 digits', 'error');
+            return;
+          }
+
+          await updateProfile({
+            full_name: newName,
+            phone: phone || null,
+            address: address || null,
+            pincode: pincode || null
+          });
 
           Utils.showToast('Profile updated successfully!', 'success');
           Utils.logAction('Updated Profile', { name: newName });

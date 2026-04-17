@@ -181,7 +181,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         <div class="product-img-wrap">
           <span class="product-badge">${display.category}</span>
           <img src="${display.image}" alt="${display.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/400x300?text=No+Image'">
-          <button class="quick-view-btn" onclick="openModal('${display.id}')">Quick View</button>
+          <button class="quick-view-btn" onclick="window.location.href='product-details.html?id=${display.id}'">Quick View</button>
         </div>
         <div class="product-info">
           <span class="product-category">${display.category}</span>
