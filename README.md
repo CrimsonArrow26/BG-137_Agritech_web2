@@ -23,6 +23,16 @@ This project demonstrates:
 
 ---
 
+## Team Information
+
+**Team Name:** bg 137
+
+**Team Members:**
+- Prathamesh Yewale
+- Satyam Kumar Singh
+
+---
+
 ## Key Features
 
 ### Authentication & User Management
