@@ -49,7 +49,7 @@ async function login(email, password) {
 
 async function logout() {
   await supabase.auth.signOut();
-  window.location.href = '/login.html';
+  window.location.href = 'login.html';
 }
 
 async function signInWithGoogle() {
@@ -81,11 +81,11 @@ async function getCurrentUser() {
 async function protectRoute(allowedRoles = []) {
   const current = await getCurrentUser();
   if (!current) {
-    window.location.href = '/login.html';
+    window.location.href = 'login.html';
     return null;
   }
   if (allowedRoles.length && !allowedRoles.includes(current.profile.role)) {
-    window.location.href = '/dashboard.html';
+    window.location.href = 'dashboard.html';
     return null;
   }
   return current;

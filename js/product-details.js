@@ -1,6 +1,6 @@
 // ============================================================
 // product-details.js — Farmer Marketplace
-// Supabase backend integration for product detail page
+// Supabase backend integration
 // ============================================================
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -18,20 +18,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    // Fetch product from Supabase
+    // Fetch product through the products.js module (no raw DB calls inline)
     try {
-        const { data: product, error } = await supabase
-            .from('products')
-            .select('*, user_profiles(full_name, address)')
-            .eq('id', productId)
-            .eq('is_active', true)
-            .single();
+        const product = await fetchProductById(productId);
 
-        if (error || !product) {
+        if (!product || !product.is_active) {
             if (container) container.style.display = 'none';
             if (errorMsg) errorMsg.style.display = 'block';
             if (loader) loader.style.display = 'none';
-            console.error('Product not found:', error);
             return;
         }
 
@@ -74,22 +68,34 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (addBtn) {
             addBtn.addEventListener('click', async () => {
                 const qty = parseInt(qtyInput.value) || 1;
+
                 if (qty > product.stock_qty) {
                     Utils.showToast('Not enough stock available', 'error');
                     return;
                 }
+
+                addBtn.disabled = true;
                 try {
                     await addToCart(product.id, qty);
-                    Utils.showToast(`<b>${product.name}</b> added to cart!`, 'success');
+                    Utils.showToast('Added to cart!', 'success');
+                    if (window.updateNavCartCount) await window.updateNavCartCount();
                 } catch (err) {
-                    Utils.showToast('Please login to add items to cart', 'error');
-                    setTimeout(() => window.location.href = '/login.html', 1500);
+                    const msg = err.message && err.message.includes('log in')
+                        ? 'Please log in to add items to cart.'
+                        : 'Failed to add to cart. Please try again.';
+                    Utils.showToast(msg, 'error');
+                    if (err.message && err.message.includes('log in')) {
+                        setTimeout(() => window.location.href = 'login.html', 1500);
+                        return;
+                    }
+                } finally {
+                    addBtn.disabled = false;
                 }
             });
         }
 
     } catch (err) {
-        console.error('Error loading product:', err);
+        Utils.showToast('Failed to load product details.', 'error');
         if (container) container.style.display = 'none';
         if (errorMsg) errorMsg.style.display = 'block';
         if (loader) loader.style.display = 'none';

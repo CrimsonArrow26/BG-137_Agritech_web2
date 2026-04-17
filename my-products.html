@@ -297,6 +297,7 @@
     <script src="js/config.js"></script>
     <script src="js/supabase.js"></script>
     <script src="js/auth.js"></script>
+    <script src="js/products.js"></script>
     <script src="js/main.js"></script>
     
     <script>
@@ -318,13 +319,8 @@
 
         async function loadProducts(farmerId) {
             try {
-                const { data: products, error } = await supabase
-                    .from('products')
-                    .select('id, name, category, price, unit, stock_qty, image_url, is_active, created_at')
-                    .eq('farmer_id', farmerId)
-                    .order('created_at', { ascending: false });
-
-                if (error) throw error;
+                // Use fetchFarmerProducts from products.js — no raw DB calls inline
+                const products = await fetchFarmerProducts(farmerId);
 
                 // Update stats
                 const total = products?.length || 0;
@@ -367,7 +363,6 @@
                 });
 
             } catch (err) {
-                console.error('Failed to load products:', err);
                 Utils.showToast('Failed to load products', 'error');
             }
         }
@@ -416,7 +411,7 @@
                                 <button class="action-btn btn-edit" onclick="editProduct('${p.id}')">
                                     <i class="fa-solid fa-pen"></i> Edit
                                 </button>
-                                <button class="action-btn btn-delete" onclick="deleteProduct('${p.id}')">
+                                <button class="action-btn btn-delete" onclick="softDeleteProduct('${p.id}')">
                                     <i class="fa-solid fa-trash"></i>
                                 </button>
                             </div>
@@ -432,24 +427,19 @@
             window.location.href = 'add-product.html?edit=' + productId;
         }
 
-        async function deleteProduct(productId) {
-            if (!confirm('Are you sure you want to remove this product? This will hide it from the marketplace.')) return;
-            
+        async function softDeleteProduct(productId) {
+            // Using deleteProduct() from products.js (soft-delete: is_active = false)
+            const confirmDelete = window.confirm('Remove this product from the marketplace? It will remain in your order history.');
+            if (!confirmDelete) return;
+
             try {
-                const { error } = await supabase
-                    .from('products')
-                    .update({ is_active: false })
-                    .eq('id', productId);
-
-                if (error) throw error;
-
-                Utils.showToast('Product removed successfully', 'success');
-                // Reload products
+                await deleteProduct(productId);
+                Utils.showToast('Product removed from marketplace.', 'success');
+                // Re-fetch and re-render
                 const currentUser = await getCurrentUser();
                 if (currentUser) loadProducts(currentUser.user.id);
             } catch (err) {
-                console.error('Failed to delete product:', err);
-                Utils.showToast('Failed to remove product', 'error');
+                Utils.showToast('Failed to remove product. Please try again.', 'error');
             }
         }
 

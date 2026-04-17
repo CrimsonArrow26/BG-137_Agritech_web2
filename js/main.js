@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (supabaseClient && supabaseClient.auth) {
     supabaseClient.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_OUT') {
-        window.location.href = '/login.html';
+        window.location.href = 'login.html';
       }
     });
   }
