@@ -5,7 +5,9 @@
 
 const ORDER_STATUSES = ['placed', 'confirmed', 'shipped', 'delivered', 'cancelled'];
 
-async function placeOrder(shippingAddress, paymentMethod = 'cod') {
+// paymentDetails (optional, for Razorpay):
+//   { razorpay_order_id: string, razorpay_payment_id: string }
+async function placeOrder(shippingAddress, paymentMethod = 'cod', paymentDetails = {}) {
   const { data: { session } } = await supabase.auth.getSession();
   if (!session) throw new Error('Not authenticated');
 
@@ -23,15 +25,23 @@ async function placeOrder(shippingAddress, paymentMethod = 'cod') {
   const totalAmount = cartItems.reduce((sum, item) =>
     sum + (item.quantity * item.products.price), 0);
 
+  // Build order insert payload
+  const orderPayload = {
+    buyer_id:         session.user.id,
+    total_amount:     totalAmount,
+    shipping_address: shippingAddress,
+    payment_method:   paymentMethod,
+    payment_status:   paymentMethod === 'razorpay' ? 'paid' : 'pending',
+  };
+
+  // Attach Razorpay identifiers if provided
+  if (paymentDetails.razorpay_order_id)  orderPayload.razorpay_order_id  = paymentDetails.razorpay_order_id;
+  if (paymentDetails.razorpay_payment_id) orderPayload.razorpay_payment_id = paymentDetails.razorpay_payment_id;
+
   // Create order
   const { data: order, error: orderError } = await supabase
     .from('orders')
-    .insert({
-      buyer_id: session.user.id,
-      total_amount: totalAmount,
-      shipping_address: shippingAddress,
-      payment_method: paymentMethod
-    })
+    .insert(orderPayload)
     .select()
     .single();
 
