@@ -172,9 +172,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   // 3. Hide the mock card section — Razorpay modal handles payment collection
+  //    Also remove 'required' from hidden inputs so the browser doesn't
+  //    block form submission on fields it can't focus.
   const paymentSection = document.querySelector('.checkout-section:nth-child(2)');
   if (paymentSection) {
     paymentSection.style.display = 'none';
+    paymentSection.querySelectorAll('[required]').forEach(el => el.removeAttribute('required'));
   }
 
   // 4. Load cart from Supabase
