@@ -198,7 +198,7 @@ async function loadFarmerDashboard(farmerId) {
       } else {
         productsGrid.innerHTML = products.map(p => `
           <div style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid var(--border);">
-            <img src="${p.image_url || 'https://via.placeholder.com/400x120?text=No+Image'}" alt="${p.name}" style="width:100%; height:140px; object-fit:cover;">
+            <img src="${p.image_url || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="120"%3E%3Crect fill="%23f0f0f0" width="400" height="120"/%3E%3Ctext fill="%23999" font-family="Arial" font-size="14" x="50%25" y="50%25" text-anchor="middle" dominant-baseline="middle"%3ENo Image%3C/text%3E%3C/svg%3E'}" alt="${p.name}" style="width:100%; height:140px; object-fit:cover;">
             <div style="padding: 16px;">
               <h4 style="margin-bottom: 4px; font-size: 1.1rem; color: var(--text-main);">${p.name}</h4>
               <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 12px;">${p.stock_qty} in stock</p>
@@ -258,7 +258,7 @@ async function loadBuyerDashboard(userId) {
     if (recsGrid) {
       recsGrid.innerHTML = recs.map(p => `
         <div style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid var(--border);">
-          <img src="${p.image_url || 'https://via.placeholder.com/400x140?text=No+Image'}" alt="${p.name}" style="width:100%; height:140px; object-fit:cover;">
+          <img src="${p.image_url || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="140"%3E%3Crect fill="%23f0f0f0" width="400" height="140"/%3E%3Ctext fill="%23999" font-family="Arial" font-size="14" x="50%25" y="50%25" text-anchor="middle" dominant-baseline="middle"%3ENo Image%3C/text%3E%3C/svg%3E'}" alt="${p.name}" style="width:100%; height:140px; object-fit:cover;">
           <div style="padding: 16px;">
             <h4 style="margin-bottom: 4px; font-size: 1.05rem;">
               <a href="product-details.html?id=${p.id}" style="color: var(--text-main); text-decoration: none;">${p.name}</a>

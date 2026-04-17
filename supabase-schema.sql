@@ -135,10 +135,14 @@ CREATE POLICY "own profile" ON user_profiles
 
 -- PRODUCTS: Public read; farmers manage own products
 CREATE POLICY "public read products" ON products FOR SELECT USING (is_active = TRUE);
+-- Allow farmers to see their own inactive products (for management)
+CREATE POLICY "farmer read own products" ON products FOR SELECT
+  USING (auth.uid() = farmer_id);
 CREATE POLICY "farmer insert products" ON products FOR INSERT
   WITH CHECK (auth.uid() = farmer_id);
 CREATE POLICY "farmer update products" ON products FOR UPDATE
-  USING (auth.uid() = farmer_id);
+  USING (auth.uid() = farmer_id)
+  WITH CHECK (auth.uid() = farmer_id);
 CREATE POLICY "farmer delete products" ON products FOR DELETE
   USING (auth.uid() = farmer_id);
 

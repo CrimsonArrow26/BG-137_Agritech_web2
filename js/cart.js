@@ -14,6 +14,16 @@ async function fetchCart() {
   return data || [];
 }
 
+async function validateStock(productId, quantity) {
+  const { data, error } = await supabase
+    .from('products')
+    .select('stock_qty')
+    .eq('id', productId)
+    .single();
+  if (error || !data) return false;
+  return data.stock_qty >= quantity;
+}
+
 async function addToCart(productId, quantity = 1) {
   const { data: { session } } = await supabase.auth.getSession();
   if (!session) {
@@ -108,7 +118,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       cartGrid.innerHTML += `
         <div class="card mb-2" style="display:flex; gap:1.5rem; align-items:center; background:var(--background); padding:1rem; border-radius:12px; margin-bottom:1rem;">
-          <img src="${product.image_url || 'https://via.placeholder.com/100'}" alt="${product.name}" style="width:100px; height:100px; object-fit:cover; border-radius:var(--border-radius);">
+          <img src="${product.image_url || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22100%22 height=%22100%22/%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2212%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22%3ENo Image%3C/text%3E%3C/svg%3E'}" alt="${product.name}" style="width:100px; height:100px; object-fit:cover; border-radius:var(--border-radius);">
           <div style="flex:1;">
             <h4 style="margin:0;"><a href="product-details.html?id=${product.id}" style="color:inherit; text-decoration:none;">${product.name}</a></h4>
             <p class="text-secondary text-sm mb-1" style="color:var(--text-muted);"><i class="fa-solid fa-wheat-awn"></i> ${product.user_profiles?.full_name || 'Unknown Farmer'}</p>
