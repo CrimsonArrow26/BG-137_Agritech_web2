@@ -4,7 +4,15 @@
 
 **Farmer Marketplace** is a **full-stack e-commerce platform** connecting local farmers directly with consumers. Built using **HTML, CSS, Vanilla JavaScript** with **Supabase** as the backend, it provides a complete marketplace experience for organic produce.
 
-The platform features:
+This project is developed in **two phases (Rounds)**:
+- **Round 1:** Core E-commerce Platform – Authentication, product catalog, cart, orders, and basic dashboards
+- **Round 2:** Enhanced Features – Payment integration, advanced analytics, quick view, and enhanced dashboards
+
+---
+
+## Round 1 – Core E-Commerce Platform
+
+### Features
 
 * **Real Authentication** with Email/Password and Google OAuth
 * **Live Product Catalog** stored in PostgreSQL with RLS security
@@ -14,12 +22,75 @@ The platform features:
 * **Product Image Uploads** via Supabase Storage
 * **Profile Management** with avatar support
 
-This project demonstrates:
+### Demonstrates
 
 * Full-stack multi-role architecture with Row Level Security
 * Modern UI/UX with dark/light theme support
 * Real-time data persistence via Supabase
 * Secure authentication flow with protected routes
+
+---
+
+## Round 2 – Enhanced Features & Payment Integration
+
+### New Features Added
+
+#### Quick View Modal
+* **Instant Product Preview** – View product details without leaving the marketplace page
+* **Quick Add to Cart** – Add items directly from the modal with quantity selector
+* **Product Highlights** – Shows price, stock status, farmer info, and description
+* **Seamless UX** – Press ESC or click outside to close; keyboard accessible
+
+#### Razorpay Payment Gateway Integration
+* **Secure Online Payments** – Full Razorpay integration for credit/debit cards, UPI, and wallets
+* **Multiple Payment Methods:**
+  - Credit/Debit Cards (Visa, Mastercard, RuPay)
+  - UPI (Google Pay, PhonePe, Paytm)
+  - Net Banking
+  - Wallets
+* **Order Confirmation Flow** – Automatic order creation after successful payment verification
+* **Webhook Verification** – Server-side payment verification for security
+* **Failed Payment Handling** – Graceful error handling with retry option
+* **COD Still Available** – Cash on Delivery option retained for offline payments
+
+#### Enhanced Analytics Dashboard
+* **Revenue Timeline Chart** – 7-day revenue visualization with Chart.js
+* **Real-time Statistics:**
+  - Total revenue and items sold
+  - Active vs total listings
+  - Pending orders count
+  - Cart item count
+* **Top Performing Products** – Identifies best-selling items by revenue
+* **Order Status Distribution** – Visual breakdown of order statuses
+* **Buyer Spending Analytics** – Track total spent and active orders
+
+#### Enhanced Seller (Farmer) Dashboard
+* **Comprehensive Stats Cards:**
+  - Total revenue with rupee formatting
+  - Total products sold count
+  - Active/inactive listings breakdown
+  - Pending orders awaiting action
+* **Recent Orders Widget** – Quick view of latest orders with status
+* **Inventory Overview** – Low stock alerts and quick product management
+* **Quick Actions** – Shortcuts to add products, view orders, manage inventory
+* **Performance Metrics** – Track sales trends over time
+
+#### Enhanced Buyer Dashboard
+* **Personalized Overview:**
+  - Total orders placed
+  - Total amount spent
+  - Active orders in progress
+  - Cart summary with item count
+* **Recent Activity Feed** – Latest orders with status and date
+* **Quick Navigation** – Direct links to marketplace, cart, and orders
+* **Account Health** – Profile completion indicator
+
+#### Additional Round 2 Improvements
+* **Stock Validation** – Real-time stock checks before add-to-cart and checkout
+* **Order Status Workflow** – Complete lifecycle from placed → confirmed → shipped → delivered
+* **Soft Delete for Products** – Products marked inactive to preserve order history
+* **Enhanced Error Handling** – User-friendly error messages throughout
+* **Loading States** – Better UX with loaders on all async operations
 
 ---
 
@@ -398,14 +469,14 @@ npx serve .
 
 ## Future Enhancements
 
-* **Payment Gateway Integration** (Razorpay/Stripe)
-* **Real-time Updates** via Supabase Realtime
-* **Email Notifications** via Supabase Edge Functions
+* **Real-time Updates** via Supabase Realtime for live notifications
+* **Email Notifications** via Supabase Edge Functions for order updates
 * **Messaging System** between buyers and farmers
-* **Order Status Notifications**
-* **Admin Dashboard** for moderation
-* **Product Reviews & Ratings**
-* **Inventory CSV Import** for farmers
+* **Order Status Push Notifications**
+* **Admin Dashboard** for platform moderation
+* **Product Reviews & Ratings** system
+* **Inventory CSV Import** for bulk farmer uploads
+* **Multi-language Support** (Hindi, Marathi, etc.)
 
 ---
 
