@@ -53,8 +53,12 @@ function renderOrderSummary(cartItems) {
 // ── Razorpay helpers ─────────────────────────────────────────
 
 async function createRazorpayOrder(amountInr) {
+  const { data: { session } } = await supabase.auth.getSession();
   const { data, error } = await supabase.functions.invoke('create-razorpay-order', {
     body: { amount: amountInr },
+    headers: {
+      Authorization: `Bearer ${session?.access_token}`
+    }
   });
   if (error) throw new Error('Could not initiate payment. Please try again.');
   if (data?.error) throw new Error(data.error);
@@ -62,8 +66,12 @@ async function createRazorpayOrder(amountInr) {
 }
 
 async function verifyRazorpayPayment(razorpay_order_id, razorpay_payment_id, razorpay_signature) {
+  const { data: { session } } = await supabase.auth.getSession();
   const { data, error } = await supabase.functions.invoke('verify-razorpay-payment', {
     body: { razorpay_order_id, razorpay_payment_id, razorpay_signature },
+    headers: {
+      Authorization: `Bearer ${session?.access_token}`
+    }
   });
   if (error || !data?.verified) {
     throw new Error('Payment verification failed. Please contact support.');
@@ -72,6 +80,13 @@ async function verifyRazorpayPayment(razorpay_order_id, razorpay_payment_id, raz
 }
 
 async function openRazorpayModal({ rzpOrderData, shippingAddress, profile, cartItems, btn }) {
+  console.log('Opening Razorpay modal with data:', { rzpOrderData, profile });
+
+  if (typeof window.Razorpay === 'undefined') {
+    console.error('Razorpay SDK not loaded. Check that https://checkout.razorpay.com/v1/checkout.js is loaded.');
+    throw new Error('Payment SDK not loaded. Please refresh the page.');
+  }
+
   return new Promise((resolve, reject) => {
     const totals = calculateTotal(cartItems);
 
@@ -127,7 +142,9 @@ async function openRazorpayModal({ rzpOrderData, shippingAddress, profile, cartI
       },
     };
 
+    console.log('Creating Razorpay instance with options:', { key: options.key, amount: options.amount, order_id: options.order_id });
     const rzp = new window.Razorpay(options);
+    console.log('Razorpay instance created, calling open()...');
 
     // Razorpay emits payment failures (e.g. bank declined) through this event
     rzp.on('payment.failed', function(response) {
@@ -253,7 +270,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
       // Step A: Create Razorpay order server-side
       rzpOrderData = await createRazorpayOrder(totals.grandTotal);
+      console.log('Razorpay order created:', rzpOrderData);
+      if (!rzpOrderData || !rzpOrderData.key_id || !rzpOrderData.order_id) {
+        throw new Error('Invalid response from payment server. Missing key_id or order_id.');
+      }
     } catch (err) {
+      console.error('Failed to create Razorpay order:', err);
       Utils.showToast(err.message || 'Could not start payment. Try again.', 'error');
       if (placeOrderBtn) {
         placeOrderBtn.disabled  = false;
