@@ -60,7 +60,10 @@ async function createRazorpayOrder(amountInr) {
   console.log('Session found, token:', session.access_token?.slice(0, 20) + '...');
 
   const { data, error } = await supabase.functions.invoke('create-razorpay-order', {
-    body: { amount: amountInr }
+    body: { amount: amountInr },
+    headers: {
+      Authorization: `Bearer ${session.access_token}`
+    }
   });
 
   console.log('Edge Function response:', { data, error });
@@ -83,7 +86,10 @@ async function verifyRazorpayPayment(razorpay_order_id, razorpay_payment_id, raz
   }
 
   const { data, error } = await supabase.functions.invoke('verify-razorpay-payment', {
-    body: { razorpay_order_id, razorpay_payment_id, razorpay_signature }
+    body: { razorpay_order_id, razorpay_payment_id, razorpay_signature },
+    headers: {
+      Authorization: `Bearer ${session.access_token}`
+    }
   });
 
   if (error) {
