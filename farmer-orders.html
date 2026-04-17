@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders Received - Farmer Marketplace</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <style>
+        .orders-table { width: 100%; border-collapse: collapse; }
+        .orders-table th { text-align: left; padding: 14px; font-weight: 600; color: var(--text-muted); border-bottom: 2px solid var(--border); }
+        .orders-table td { padding: 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+        .order-cell { display: flex; align-items: center; gap: 12px; }
+        .order-img { width: 50px; height: 50px; border-radius: 8px; object-fit: cover; }
+        .status-badge { display: inline-block; padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 500; text-transform: capitalize; }
+        .status-placed { background: #fff3cd; color: #856404; }
+        .status-confirmed { background: #d1ecf1; color: #0c5460; }
+        .status-shipped { background: #d4edda; color: #155724; }
+        .status-delivered { background: #d4edda; color: #155724; }
+        .status-cancelled { background: #f8d7da; color: #721c24; }
+        .action-btn { padding: 8px 16px; border-radius: 6px; border: none; cursor: pointer; font-size: 0.85rem; transition: all 0.3s; }
+        .action-btn:hover { transform: translateY(-2px); }
+        .btn-confirm { background: #28a745; color: white; }
+        .btn-ship { background: #17a2b8; color: white; }
+        .btn-complete { background: #6c757d; color: white; }
+        .order-card { background: var(--bg-offset); border-radius: 12px; padding: 20px; margin-bottom: 20px; border: 1px solid var(--border); }
+        .order-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
+        .order-items { margin-top: 15px; padding-top: 15px; border-top: 1px dashed var(--border); }
+        .order-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; }
+        .filter-btn { padding: 8px 16px; border-radius: 20px; border: 1px solid var(--border); background: var(--background); cursor: pointer; transition: all 0.3s; font-size: 0.9rem; }
+        .filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+        .filter-btn:hover:not(.active) { background: var(--bg-offset); }
+        @media (max-width: 768px) {
+            .orders-table { display: block; overflow-x: auto; }
+            .order-header { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Premium Global Loader -->
+    <div id="global-loader">
+        <div class="loader-content">
+            <div class="loader-seedling">
+                <i class="fa-solid fa-seedling"></i>
+            </div>
+            <span class="loader-text">Loading orders...</span>
+        </div>
+    </div>
+
+    <div id="navbar-container"></div>
+
+    <main class="page-container" style="padding-top: 120px; padding-bottom: 80px; max-width: 1200px; margin: 0 auto; padding-left: 1.5rem; padding-right: 1.5rem;">
+        <!-- Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 15px;">
+            <div>
+                <h1 style="font-family: 'Playfair Display', serif; color: var(--primary); font-size: 2rem; margin-bottom: 8px;">
+                    <i class="fa-solid fa-clipboard-list"></i> Orders Received
+                </h1>
+                <p style="color: var(--text-muted);">Manage and fulfill customer orders</p>
+            </div>
+            <a href="dashboard.html" class="btn btn-outline" style="padding: 10px 20px; border-radius: 30px; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+
+        <!-- Stats Cards -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 30px;">
+            <div style="background: var(--bg-offset); padding: 20px; border-radius: 12px; border: 1px solid var(--border); text-align: center;">
+                <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 8px;">New Orders</p>
+                <p id="stat-new" style="font-size: 1.5rem; font-weight: 700; color: #ffc107;">0</p>
+            </div>
+            <div style="background: var(--bg-offset); padding: 20px; border-radius: 12px; border: 1px solid var(--border); text-align: center;">
+                <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 8px;">Confirmed</p>
+                <p id="stat-confirmed" style="font-size: 1.5rem; font-weight: 700; color: #17a2b8;">0</p>
+            </div>
+            <div style="background: var(--bg-offset); padding: 20px; border-radius: 12px; border: 1px solid var(--border); text-align: center;">
+                <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 8px;">Shipped</p>
+                <p id="stat-shipped" style="font-size: 1.5rem; font-weight: 700; color: #6f42c1;">0</p>
+            </div>
+            <div style="background: var(--bg-offset); padding: 20px; border-radius: 12px; border: 1px solid var(--border); text-align: center;">
+                <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 8px;">Total Revenue</p>
+                <p id="stat-revenue" style="font-size: 1.5rem; font-weight: 700; color: var(--primary);">₹0</p>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div style="display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap;">
+            <button class="filter-btn active" data-filter="all">All Orders</button>
+            <button class="filter-btn" data-filter="placed">New</button>
+            <button class="filter-btn" data-filter="confirmed">Confirmed</button>
+            <button class="filter-btn" data-filter="shipped">Shipped</button>
+            <button class="filter-btn" data-filter="delivered">Delivered</button>
+        </div>
+
+        <!-- Orders List -->
+        <div id="orders-container">
+            <!-- Orders will be rendered here -->
+        </div>
+
+        <!-- Empty State (hidden by default) -->
+        <div id="empty-state" style="display: none; text-align: center; padding: 60px 20px; background: var(--bg-offset); border-radius: 16px; border: 1px solid var(--border);">
+            <i class="fa-solid fa-box-open" style="font-size: 4rem; color: var(--border); margin-bottom: 20px;"></i>
+            <h3 style="color: var(--text-main); margin-bottom: 10px;">No orders yet</h3>
+            <p style="color: var(--text-muted); margin-bottom: 20px;">When customers purchase your products, they'll appear here</p>
+            <a href="products.html" class="btn btn-primary">Browse Marketplace</a>
+        </div>
+    </main>
+
+    <div id="footer-container"></div>
+
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Scripts -->
+    <script src="js/utils.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/main.js"></script>
+    
+    <script>
+        let allOrders = [];
+
+        // Protect route - only farmers allowed
+        async function initFarmerOrders() {
+            const currentUser = await getCurrentUser();
+            if (!currentUser) {
+                window.location.href = '/login.html';
+                return;
+            }
+            if (currentUser.profile.role !== 'farmer') {
+                Utils.showToast('Access denied. Farmers only.', 'error');
+                window.location.href = '/dashboard.html';
+                return;
+            }
+            
+            loadOrders(currentUser.user.id);
+        }
+
+        async function loadOrders(farmerId) {
+            try {
+                const { data: orders, error } = await supabase
+                    .from('order_items')
+                    .select(`
+                        id, quantity, unit_price, subtotal,
+                        product:products(id, name, image_url),
+                        order:orders(id, status, created_at, total_amount,
+                            buyer:user_profiles(full_name, phone, address))
+                    `)
+                    .eq('farmer_id', farmerId)
+                    .order('created_at', { ascending: false, foreignTable: 'orders' });
+
+                if (error) throw error;
+
+                allOrders = orders || [];
+
+                // Update stats
+                const newCount = allOrders.filter(o => o.order?.status === 'placed').length;
+                const confirmedCount = allOrders.filter(o => o.order?.status === 'confirmed').length;
+                const shippedCount = allOrders.filter(o => o.order?.status === 'shipped').length;
+                const totalRevenue = allOrders.reduce((sum, o) => sum + Number(o.subtotal), 0);
+
+                document.getElementById('stat-new').textContent = newCount;
+                document.getElementById('stat-confirmed').textContent = confirmedCount;
+                document.getElementById('stat-shipped').textContent = shippedCount;
+                document.getElementById('stat-revenue').textContent = Utils.formatCurrency(totalRevenue);
+
+                renderOrders(allOrders);
+
+                // Filter handlers
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        
+                        const filter = btn.dataset.filter;
+                        if (filter === 'all') {
+                            renderOrders(allOrders);
+                        } else {
+                            renderOrders(allOrders.filter(o => o.order?.status === filter));
+                        }
+                    });
+                });
+
+            } catch (err) {
+                console.error('Failed to load orders:', err);
+                Utils.showToast('Failed to load orders', 'error');
+            }
+        }
+
+        function renderOrders(orders) {
+            const container = document.getElementById('orders-container');
+            const emptyState = document.getElementById('empty-state');
+
+            if (!orders || orders.length === 0) {
+                container.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            container.style.display = 'block';
+            emptyState.style.display = 'none';
+
+            // Group by order ID
+            const grouped = orders.reduce((acc, item) => {
+                const orderId = item.order?.id;
+                if (!acc[orderId]) {
+                    acc[orderId] = {
+                        order: item.order,
+                        items: []
+                    };
+                }
+                acc[orderId].items.push(item);
+                return acc;
+            }, {});
+
+            container.innerHTML = Object.values(grouped).map(group => {
+                const order = group.order;
+                const items = group.items;
+                const status = order?.status || 'placed';
+                
+                let actionButton = '';
+                if (status === 'placed') {
+                    actionButton = `<button class="action-btn btn-confirm" onclick="updateOrderStatus('${order.id}', 'confirmed')">Confirm Order</button>`;
+                } else if (status === 'confirmed') {
+                    actionButton = `<button class="action-btn btn-ship" onclick="updateOrderStatus('${order.id}', 'shipped')">Mark Shipped</button>`;
+                } else if (status === 'shipped') {
+                    actionButton = `<button class="action-btn btn-complete" onclick="updateOrderStatus('${order.id}', 'delivered')">Mark Delivered</button>`;
+                }
+
+                const total = items.reduce((sum, i) => sum + Number(i.subtotal), 0);
+
+                return `
+                    <div class="order-card">
+                        <div class="order-header">
+                            <div>
+                                <p style="font-weight: 700; color: var(--text-main); font-size: 1.1rem;">Order #${order?.id?.slice(0, 8)}</p>
+                                <p style="color: var(--text-muted); font-size: 0.85rem;">
+                                    ${new Date(order?.created_at).toLocaleDateString()} • 
+                                    ${items.length} item${items.length > 1 ? 's' : ''} • 
+                                    Total: ${Utils.formatCurrency(total)}
+                                </p>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <span class="status-badge status-${status}">${status}</span>
+                                ${actionButton}
+                            </div>
+                        </div>
+                        
+                        <div style="background: var(--background); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px;"><i class="fa-solid fa-user"></i> Customer</p>
+                            <p style="font-weight: 600; color: var(--text-main);">${order?.buyer?.full_name || 'Unknown'}</p>
+                            <p style="color: var(--text-muted); font-size: 0.9rem;"><i class="fa-solid fa-phone"></i> ${order?.buyer?.phone || 'N/A'}</p>
+                            <p style="color: var(--text-muted); font-size: 0.9rem;"><i class="fa-solid fa-location-dot"></i> ${order?.buyer?.address || 'N/A'}</p>
+                        </div>
+
+                        <div class="order-items">
+                            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Ordered Items</p>
+                            ${items.map(item => `
+                                <div class="order-item">
+                                    <img src="${item.product?.image_url || 'https://via.placeholder.com/50'}" alt="${item.product?.name}" class="order-img">
+                                    <div style="flex: 1;">
+                                        <p style="font-weight: 600; color: var(--text-main);">${item.product?.name}</p>
+                                        <p style="color: var(--text-muted); font-size: 0.85rem;">
+                                            ${item.quantity} x ${Utils.formatCurrency(item.unit_price)}
+                                        </p>
+                                    </div>
+                                    <p style="font-weight: 700; color: var(--primary);">${Utils.formatCurrency(item.subtotal)}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function updateOrderStatus(orderId, newStatus) {
+            try {
+                Utils.showLoader?.();
+                
+                const { error } = await supabase
+                    .from('orders')
+                    .update({ status: newStatus, updated_at: new Date().toISOString() })
+                    .eq('id', orderId);
+
+                if (error) throw error;
+
+                Utils.showToast(`Order ${newStatus} successfully!`, 'success');
+                
+                // Reload orders
+                const currentUser = await getCurrentUser();
+                if (currentUser) loadOrders(currentUser.user.id);
+            } catch (err) {
+                console.error('Failed to update order:', err);
+                Utils.showToast('Failed to update order status', 'error');
+            } finally {
+                Utils.hideLoader?.();
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            Utils.showLoader?.();
+            initFarmerOrders().finally(() => Utils.hideLoader?.());
+        });
+    </script>
+</body>
+</html>

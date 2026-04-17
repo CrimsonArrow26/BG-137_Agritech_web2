@@ -34,11 +34,27 @@
                 <span id="navUserName">User</span>
                 <i class="fa-solid fa-chevron-down" style="font-size: 0.8rem;"></i>
                 
-                <div class="dropdown">
-                    <a href="dashboard.html"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
-                    <a href="orders.html"><i class="fa-solid fa-box"></i> My Orders</a>
-                    <a href="profile.html"><i class="fa-solid fa-user"></i> Profile Details</a>
-                    <a href="#" id="logoutBtn" style="color: var(--danger); border-top: 1px solid var(--border-color);"><i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out</a>
+                <div class="dropdown" id="user-dropdown">
+                    <!-- Buyer menu (default) -->
+                    <div id="buyer-menu" style="display: none;">
+                        <a href="dashboard.html"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+                        <a href="orders.html"><i class="fa-solid fa-box"></i> My Orders</a>
+                        <a href="cart.html"><i class="fa-solid fa-cart-shopping"></i> My Cart</a>
+                        <a href="profile.html"><i class="fa-solid fa-user"></i> Profile</a>
+                        <div style="border-top: 1px solid var(--border-color); margin: 8px 0;"></div>
+                        <a href="products.html"><i class="fa-solid fa-basket-shopping"></i> Browse Products</a>
+                    </div>
+                    <!-- Farmer menu -->
+                    <div id="farmer-menu" style="display: none;">
+                        <a href="dashboard.html"><i class="fa-solid fa-chart-line"></i> Seller Dashboard</a>
+                        <a href="add-product.html"><i class="fa-solid fa-plus"></i> Add Product</a>
+                        <a href="my-products.html"><i class="fa-solid fa-wheat-awn"></i> My Products</a>
+                        <a href="farmer-orders.html"><i class="fa-solid fa-clipboard-list"></i> Orders Received</a>
+                        <a href="profile.html"><i class="fa-solid fa-user"></i> Profile</a>
+                        <div style="border-top: 1px solid var(--border-color); margin: 8px 0;"></div>
+                        <a href="products.html"><i class="fa-solid fa-basket-shopping"></i> Browse Market</a>
+                    </div>
+                    <a href="#" id="logoutBtn" style="color: var(--danger);"><i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out</a>
                 </div>
             </div>
 

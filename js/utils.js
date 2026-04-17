@@ -10,8 +10,8 @@ const Utils = {
         console.log(`[ANALYTICS] ${d} | Action: ${action}`, meta);
     },
 
-    /** Format Currency */
-    formatCurrency: (val) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val),
+    /** Format Currency - INR (Indian Rupees) */
+    formatCurrency: (val) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(val),
 
     /** Storage Wrappers */
     getStorage: (key, def = null) => {
@@ -60,6 +60,13 @@ const Utils = {
     },
     
     /** Show/Hide global loader */
+    showLoader: () => {
+        const loader = document.getElementById('global-loader');
+        if (loader) {
+            loader.style.display = 'flex';
+            loader.style.opacity = '1';
+        }
+    },
     hideLoader: () => {
         const loader = document.getElementById('global-loader');
         if(loader) {

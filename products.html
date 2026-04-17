@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Farmer Marketplace - Products</title>
+    <title>Farmer Marketplace - Fresh Produce</title>
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- CSS -->
@@ -15,41 +15,77 @@
     <link rel="stylesheet" href="css/products.css">
 </head>
 <body>
-    <div id="global-loader" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--background); display:flex; justify-content:center; align-items:center; z-index:9999;">
-        <i class="fa-solid fa-seedling fa-spin fa-3x" style="color:var(--primary);"></i>
+    <!-- Premium Global Loader -->
+    <div id="global-loader">
+        <div class="loader-content">
+            <div class="loader-seedling">
+                <i class="fa-solid fa-seedling"></i>
+            </div>
+            <span class="loader-text">Harvesting products...</span>
+        </div>
     </div>
 
     <div id="navbar-container"></div>
 
-    <main class="page-container" style="padding-top: 100px; padding-bottom: 60px;">
-        <div class="product-header" style="text-align: center; margin-bottom: 40px;">
-            <h1 style="color: var(--primary); font-family: 'Playfair Display', serif; font-size: 2.5rem;">Fresh Produce</h1>
-            <p style="color: var(--text-muted); font-size: 1.1rem; margin-top: 10px;">Browse our fresh selection of organic goods</p>
-        </div>
-        
-        <div class="filters-container" style="display:flex; justify-content:center; gap:15px; margin-bottom:40px; flex-wrap:wrap;">
-            <div style="position: relative;">
-                <i class="fa-solid fa-search" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
-                <input type="text" id="searchInput" placeholder="Search products..." style="padding: 12px 15px 12px 40px; border-radius: 30px; border: 1px solid var(--border); background: var(--bg-offset); color: var(--text-main); width:300px; max-width: 100%; font-size: 1rem; outline: none; transition: border-color 0.3s;">
+    <main class="page-container" style="padding-top: 120px; padding-bottom: 80px; max-width: var(--max-width); margin: 0 auto; padding-left: 1.5rem; padding-right: 1.5rem;">
+        <!-- Premium Header Section -->
+        <div class="product-header" style="text-align: center; margin-bottom: 60px; position: relative;">
+            <div style="display: inline-flex; align-items: center; gap: 0.5rem; background: var(--bg-alt); padding: 0.5rem 1rem; border-radius: 50px; margin-bottom: 1.5rem; box-shadow: var(--shadow-sm);">
+                <i class="fa-solid fa-basket-shopping" style="color: var(--primary-accent);"></i>
+                <span style="font-size: 0.875rem; color: var(--text-secondary); font-weight: 500;">Fresh from local farms</span>
             </div>
-            <select id="categoryFilter" style="padding: 12px 20px; border-radius: 30px; border: 1px solid var(--border); background: var(--bg-offset); color: var(--text-main); font-size: 1rem; outline: none; cursor: pointer;">
+            <h1 style="color: var(--primary-color); font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 700; margin-bottom: 0.75rem; letter-spacing: -0.02em;">
+                Fresh Produce
+            </h1>
+            <p style="color: var(--text-secondary); font-size: 1.15rem; max-width: 500px; margin: 0 auto 20px auto; line-height: 1.7;">
+                Browse our curated selection of organic vegetables, fruits, and artisanal dairy products
+            </p>
+            <!-- Farmer Sell Button - Only visible to farmers -->
+            <div id="farmer-sell-section" style="display: none; margin-top: 20px;">
+                <a href="add-product.html" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 10px; padding: 14px 28px; border-radius: 30px; font-weight: 500;">
+                    <i class="fa-solid fa-plus-circle"></i> Sell Your Products
+                </a>
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 8px;">List your farm products and reach more customers</p>
+            </div>
+        </div>
+
+        <!-- Premium Filters Container -->
+        <div class="filters-container" style="display: flex; justify-content: center; gap: 1rem; margin-bottom: 50px; flex-wrap: wrap;">
+            <div style="position: relative;">
+                <i class="fa-solid fa-search" style="position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+                <input type="text" id="searchInput" placeholder="Search fresh products..." style="padding: 14px 20px 14px 48px; border-radius: 50px; border: 2px solid var(--border-color); background: var(--bg-alt); color: var(--text-primary); width: 320px; max-width: 100%; font-size: 0.95rem; outline: none; transition: var(--transition); font-family: 'Inter', sans-serif;">
+            </div>
+            <select id="categoryFilter" style="padding: 14px 24px; border-radius: 50px; border: 2px solid var(--border-color); background: var(--bg-alt); color: var(--text-primary); font-size: 0.95rem; outline: none; cursor: pointer; font-family: 'Inter', sans-serif; min-width: 180px;">
                 <option value="all">All Categories</option>
                 <option value="vegetables">Vegetables</option>
                 <option value="fruits">Fruits</option>
                 <option value="dairy">Dairy</option>
+                <option value="grains">Grains</option>
+            </select>
+            <select id="sortFilter" style="padding: 14px 24px; border-radius: 50px; border: 2px solid var(--border-color); background: var(--bg-alt); color: var(--text-primary); font-size: 0.95rem; outline: none; cursor: pointer; font-family: 'Inter', sans-serif; min-width: 160px;">
+                <option value="featured">Featured</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="newest">Newest Arrivals</option>
             </select>
         </div>
 
-        <div id="productsGrid" class="products-grid">
+        <!-- Products Grid -->
+        <div id="productsGrid" class="products-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2rem;">
             <!-- Dynamically injected via JS -->
         </div>
     </main>
 
     <div id="footer-container"></div>
 
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- Scripts -->
     <script src="js/utils.js"></script>
-    <script src="js/main.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/auth.js"></script>
     <script src="js/products.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>

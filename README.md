@@ -1,207 +1,381 @@
-# 🚜 Farmer Marketplace – Frontend Digital Agriculture Market (UI Only)
+# Farmer Marketplace – Full-Stack Digital Agriculture Platform
 
-## 📌 Overview
+## Overview
 
-**Farmer Marketplace** is a **frontend-only e-commerce platform** designed to bridge the gap between local farmers and consumers. Built using **HTML, CSS, and Vanilla JavaScript**, it provides a complete marketplace experience for organic produce.
+**Farmer Marketplace** is a **full-stack e-commerce platform** connecting local farmers directly with consumers. Built using **HTML, CSS, Vanilla JavaScript** with **Supabase** as the backend, it provides a complete marketplace experience for organic produce.
 
-It simulates a real-world **Agritech marketplace**, including:
+The platform features:
 
-* User Authentication (Buyer/Farmer roles)
-* Product Browsing & Filtering
-* Shopping Cart & Checkout System
-* Dashboard Analytics
-* Order Tracking
-* Profile Management
+* **Real Authentication** with Email/Password and Google OAuth
+* **Live Product Catalog** stored in PostgreSQL with RLS security
+* **Persistent Shopping Cart** synced across devices
+* **Complete Order Lifecycle** with status tracking
+* **Role-Based Dashboards** with real analytics
+* **Product Image Uploads** via Supabase Storage
+* **Profile Management** with avatar support
 
-This project focuses on:
+This project demonstrates:
 
-* Frontend-only multi-role architecture
-* Clean, nature-inspired UI/UX design
-* E-commerce workflow simulation for agriculture
-
-> ⚠️ Note: This is a UI-based simulation and does not include any real backend, database connectivity, or payment processing.
-
----
-
-## 🚀 Key Features
-
-* **Multi-Role Authentication:** Simulated login and signup for both Farmers and Buyers.
-* **Product Discovery:** Search and category-based filtering for fresh produce.
-* **Dynamic Shopping Cart:** Add/remove items with real-time total calculations.
-* **Simulated Checkout:** Multi-step shipping and mock payment information flow.
-* **Role-Based Dashboards:** Unique insights for buyers (spending) and farmers (sales).
-* **Theme Support:** Dark and Light mode toggle integrated globally.
-* **Responsive Design:** Optimized for mobile, tablet, and desktop views.
-* **localStorage State Management:** Persistent user sessions, cart items, and orders.
+* Full-stack multi-role architecture with Row Level Security
+* Modern UI/UX with dark/light theme support
+* Real-time data persistence via Supabase
+* Secure authentication flow with protected routes
 
 ---
 
-## 🏗️ System Architecture
+## Key Features
 
-Farmer Marketplace follows a **modular multi-page architecture**:
+### Authentication & User Management
+* **Email/Password Authentication** with role-based registration (Buyer/Farmer)
+* **Google OAuth Integration** for quick sign-in
+* **Protected Routes** with automatic redirects based on auth state
+* **Profile Management** with avatar URLs and personal details
 
-* Each feature (Market, Cart, Orders, Dashboard) has a dedicated HTML page.
-* Shared global components (Navbar, Footer) are dynamically injected.
-* Centralized CSS variables for design tokens and theming.
-* Custom `Utils` library for common UI tasks (toasts, loaders, currency formatting).
-* Application state managed entirely via `localStorage`.
+### Product Marketplace
+* **Real Product Catalog** fetched from Supabase PostgreSQL
+* **Category Filtering** (Vegetables, Fruits, Dairy, Grains, Herbs)
+* **Live Search** with debounced filtering
+* **Quick View Modal** for product preview
+* **Product Detail Pages** with farmer information
 
----
+### Shopping Experience
+* **Persistent Cart** stored in database, synced across devices
+* **Quantity Controls** with stock validation
+* **Order Placement** with address capture
+* **Order History** for buyers and order management for farmers
+* **Cart Badge** in navbar showing item count
 
-## 🧱 Architecture Layers
+### Farmer Capabilities
+* **Product Management** – Create, update, soft-delete listings
+* **Image Uploads** to Supabase Storage (JPEG, PNG, WebP, max 5MB)
+* **Revenue Analytics** with total sales and order tracking
+* **Active Listings Dashboard** showing stock levels
 
-### 🔹 UI Layer
-* **HTML5:** Semantic structure for marketplace components.
-* **Vanilla CSS3:** Custom grid/flexbox layouts, glassmorphism effects, and transitions.
-* **FontAwesome:** Rich iconography for farm categories and actions.
-* **Google Fonts:** Roboto and Playfair Display for a premium feel.
-
-### 🔹 Logic Layer
-* **Vanilla JavaScript:** Handles DOM manipulation, routing simulation, and event logic.
-* **State Logic:** Custom modules for `auth.js`, `cart.js`, and `products.js`.
-* **Component System:** Reusable navbar and footer components injected globally.
-
-### 🔹 Data Layer
-* **localStorage:** Acts as the mock database for:
-    * User accounts and sessions
-    * Product catalog (static seed)
-    * Shopping cart status
-    * Order history
-
----
-
-## 🔐 Authentication Module
-
-### Features
-* Dedicated Login and Signup pages.
-* Role selection (Buyer vs. Farmer) during registration.
-* Session persistence using `auth_user` key in `localStorage`.
-* Protected routes (redirects to login if unauthorized).
-
-### Flow
-1. User enters credentials.
-2. System validates against `localStorage` data.
-3. On success → User object stored in session.
-4. Redirect to Dashboard based on user role.
+### Buyer Capabilities
+* **Browse Marketplace** with filters and search
+* **Add to Cart** with real-time stock checks
+* **Checkout Flow** with COD payment option
+* **Order Tracking** with status updates (placed → confirmed → shipped → delivered)
 
 ---
 
-## 🛍️ Market & Products Module
+## System Architecture
 
-### Features
-* **Product Grid:** Responsive display of organic goods (Vegetables, Fruits, Dairy).
-* **Live Search:** Filter products by name in real-time.
-* **Category Filtering:** Quick-switch between different produce types.
-* **Details Page:** Deep-dive into product origin, farmer info, and descriptions.
+### Frontend Stack
+* **HTML5** – Semantic multi-page structure
+* **Vanilla CSS3** – Custom design system with CSS variables
+* **Vanilla JavaScript** – Modular ES6+ code with async/await
+* **FontAwesome 6.4** – Icon system
+* **Google Fonts** – Playfair Display, Inter, Cormorant Garamond
 
----
+### Backend Stack
+* **Supabase** – Backend-as-a-Service platform
+* **PostgreSQL** – Primary database with Row Level Security (RLS)
+* **Supabase Auth** – JWT-based authentication
+* **Supabase Storage** – Public bucket for product images
+* **Database Functions** – RPC for atomic operations (cart increment, stock decrement)
 
-## 🛒 Shopping & Checkout Module
-
-### Features
-* **Interactive Cart:** Quantity controls and item removal.
-* **Order Summary:** Automatic subtotal, tax, and shipping calculations.
-* **Mock Checkout:** Information gathering for shipping and "secure" payment.
-* **Order Persistence:** Successfully placed orders move to the "My Orders" tab.
-
----
-
-## 📊 Dashboard Module
-
-### Components
-* **Buyer View:** Summary of recent orders, total items purchased, and spending trends.
-* **Farmer View:** (Simulated) Sales overview, active listings, and revenue metrics.
-* **Quick Actions:** Easy navigation to shop, profile, or order history.
+### Security Features
+* **Row Level Security (RLS)** policies on all tables
+* **Users can only access** their own data
+* **Farmers can only modify** their own products
+* **Soft delete** for products to preserve order history
+* **Input validation** on client and server
 
 ---
 
-## 🎨 UI/UX Design
+## Project Structure
 
-### Design Principles
-* **Organic Aesthetics:** Nature-inspired color palette (Green/Earth tones).
-* **Clean Components:** Card-based layouts with soft shadows and generous white space.
-* **Premium Typography:** Serif headers for a rustic feel, sans-serif for readability.
-
-### Interactions
-* **Global Loader:** Smooth seedling-themed transitions between pages.
-* **Micro-interactions:** Hover states on product cards and buttons.
-* **Toast Notifications:** Instant feedback for cart actions and profile updates.
-
----
-
-## 🧠 State Management
-
-| Data Type     | Storage Key     | Purpose |
-| ------------- | --------------- | ------- |
-| Session       | `auth_user`     | Current logged-in user data |
-| Cart          | `cart`          | Array of items in the shopping bag |
-| Orders        | `orders`        | Historical record of purchases |
-| Settings      | `theme`         | User preference for Dark/Light mode |
-
----
-
-## 📦 JavaScript Modules
-
-* `utils.js` → Global helper functions (Loader, Toast, Formatting).
-* `main.js` → Navbar/Footer injection and global event handlers.
-* `auth.js` → Login/Signup logic and session checking.
-* `products.js` → Marketplace rendering and filtering.
-* `cart.js` → Shopping bag logic and persistence.
-* `dashboard.js` → Analytics rendering based on user role.
-
----
-
-## 📱 Responsiveness
-
-* **Desktop:** Full-width grid layouts (3-4 columns).
-* **Tablet:** Optimized 2-column view with adjusted spacing.
-* **Mobile:** Stacked components with a collapsible mobile-first navbar.
-
----
-
-## ⚠️ Limitations
-
-* **No Backend:** Data is local to the current browser only.
-* **No Real Payments:** The checkout process is a visual simulation.
-* **Storage Limit:** Dependent on browser `localStorage` capacity.
-* **Security:** Passwords and user data are stored in plain text locally.
+```
+Farmer Marketplace/
+├── index.html              # Landing page with splash screen
+├── login.html              # Email/password + Google login
+├── signup.html             # Role-based registration
+├── products.html           # Product marketplace with filters
+├── product-details.html    # Individual product view
+├── cart.html               # Shopping cart management
+├── checkout.html           # Order placement
+├── orders.html             # Order history (buyer & farmer views)
+├── dashboard.html          # Role-based analytics dashboard
+├── profile.html            # User profile management
+├── my-products.html        # Farmer product management
+├── about.html              # About page
+├── contact.html            # Contact form with EmailJS
+├── components/
+│   ├── navbar.html         # Shared navigation component
+│   └── footer.html         # Shared footer component
+├── css/
+│   ├── style.css           # Global styles + theme variables
+│   ├── navbar.css          # Navigation styles
+│   ├── footer.css          # Footer styles
+│   ├── auth.css            # Login/signup styles
+│   ├── products.css        # Product grid + filters
+│   ├── dashboard.css       # Dashboard layout
+│   ├── checkout.css        # Checkout flow
+│   ├── orders.css          # Order cards
+│   ├── product-details.css # PDP styles
+│   └── profile.css         # Profile page styles
+├── js/
+│   ├── supabase.js         # Supabase client configuration
+│   ├── auth.js             # Authentication functions
+│   ├── products.js         # Product CRUD + marketplace
+│   ├── cart.js             # Cart management
+│   ├── orders.js           # Order placement + fetching
+│   ├── dashboard.js        # Analytics queries
+│   ├── profile.js          # Profile updates
+│   ├── utils.js            # Helper utilities (toast, loader, formatting)
+│   └── main.js             # Component injection + global handlers
+├── email-templates/        # HTML email templates
+├── supabase-schema.sql     # Database schema + RLS policies
+└── demo-products.sql       # Seed data for testing
+```
 
 ---
 
-## 🔮 Future Enhancements
+## Database Schema
 
-* **Real API Integration:** Connect to a Node.js or Python backend.
-* **Live Market Prices:** Fetch real-time crop pricing via external APIs.
-* **Farmer Inventory Management:** Tools for farmers to upload and track stock.
-* **Image Uploads:** Actual image uploading for new product listings.
-* **Messaging System:** Direct chat between buyers and farmers.
+### Tables
+
+| Table | Purpose | Key Fields |
+|-------|---------|------------|
+| `user_profiles` | Extended user data | id, full_name, role, phone, address, avatar_url |
+| `products` | Product catalog | id, farmer_id, name, category, price, stock_qty, image_url, is_active |
+| `cart_items` | Shopping cart | id, user_id, product_id, quantity |
+| `orders` | Order headers | id, buyer_id, total_amount, status, shipping_address, payment_method |
+| `order_items` | Order line items | id, order_id, product_id, farmer_id, quantity, unit_price, subtotal |
+
+### Database Functions
+
+| Function | Purpose |
+|----------|---------|
+| `increment_cart_qty()` | Atomic upsert for cart items (adds quantity on conflict) |
+| `decrement_stock()` | Atomic stock reduction after order placement |
+| `handle_new_user()` | Auto-creates user profile on signup |
+
+### Row Level Security Policies
+
+- **user_profiles**: Users can only see/edit their own profile
+- **products**: Public read access to active products; farmers can only modify their own
+- **cart_items**: Users own their cart items only
+- **orders**: Buyers see their orders; farmers see order items for their products
+- **order_items**: Similar to orders with cross-table relationships
 
 ---
 
-## 🎯 Purpose
+## JavaScript Modules Reference
 
-Farmer Marketplace is designed to:
-* Showcase a high-end UI for agricultural e-commerce.
-* Provide a "plug-and-play" frontend for hackathon participants.
-* Demonstrate state management in multi-page Vanilla JS apps.
+### `supabase.js`
+Creates and exports the Supabase client instance using CDN-loaded SDK.
+
+### `auth.js`
+| Function | Purpose |
+|----------|---------|
+| `signup(email, password, fullName, role)` | Register new user with profile |
+| `login(email, password)` | Authenticate user |
+| `logout()` | Sign out and redirect |
+| `signInWithGoogle()` | OAuth via Google |
+| `getCurrentUser()` | Get {user, profile} for current session |
+| `protectRoute(allowedRoles)` | Guard pages requiring authentication |
+
+### `products.js`
+| Function | Purpose |
+|----------|---------|
+| `fetchProducts(filters)` | Get active products with optional category/search filters |
+| `fetchProductById(id)` | Get single product with farmer details |
+| `fetchFarmerProducts(farmerId)` | Get all products for a farmer |
+| `createProduct(productData)` | Add new product (farmer only) |
+| `updateProduct(id, updates)` | Modify existing product |
+| `deleteProduct(id)` | Soft delete (set is_active = false) |
+| `uploadProductImage(file, farmerId)` | Upload to Supabase Storage |
+| `validateStock(productId, quantity)` | Check availability before adding to cart |
+
+### `cart.js`
+| Function | Purpose |
+|----------|---------|
+| `fetchCart()` | Get cart items with product details for current user |
+| `addToCart(productId, quantity)` | Add item using RPC for atomic increment |
+| `updateCartQty(cartItemId, quantity)` | Change quantity or remove if < 1 |
+| `removeFromCart(cartItemId)` | Delete cart item |
+| `clearCart(userId)` | Empty cart (used after checkout) |
+| `getCartCount()` | Get total items for navbar badge |
+| `getCartTotal()` | Calculate cart subtotal |
+
+### `orders.js`
+| Function | Purpose |
+|----------|---------|
+| `placeOrder(shippingAddress, paymentMethod)` | Complete checkout with stock decrement |
+| `fetchBuyerOrders()` | Get orders with items for current buyer |
+| `fetchFarmerOrders(farmerId)` | Get order items for farmer's products |
+| `updateOrderStatus(orderId, status)` | Change order status |
+
+### `dashboard.js`
+| Function | Purpose |
+|----------|---------|
+| `fetchBuyerStats(userId)` | Get total spent, orders count, active orders |
+| `fetchFarmerStats(farmerId)` | Get revenue, items sold, active listings |
+
+### `profile.js`
+| Function | Purpose |
+|----------|---------|
+| `updateProfile(updates)` | Update user profile fields |
+
+### `utils.js`
+| Function | Purpose |
+|----------|---------|
+| `formatCurrency(val)` | Format as INR (Indian Rupees) |
+| `showToast(message, type)` | Display notification |
+| `showLoader()` / `hideLoader()` | Global loading overlay |
+| `injectComponent(path, targetId)` | Fetch and inject HTML components |
+| `getStorage(key)` / `setStorage(key, value)` | localStorage wrappers |
+| `logAction(action, meta)` | Analytics logging |
 
 ---
 
-## 🏁 Conclusion
+## UI/UX Features
 
-Farmer Marketplace provides a **robust frontend foundation** for building a full-scale digital agriculture hub. It combines modern design with a simulated e-commerce workflow to provide a seamless user experience.
+### Design System
+* **Color Palette**: Organic greens (#2D6A4F, #1B4332) with cream backgrounds
+* **Typography**: Playfair Display for headings, Inter for body text
+* **Components**: Card-based layouts with soft shadows
+* **Animations**: Smooth transitions, hover states, splash screen on first visit
 
-### Final Outcome:
-* Professional Agri-marketplace UI
-* Functional Shopping & Order simulation
-* Scalable Architecture for future backend integration
+### Theme Support
+* Dark/Light mode toggle (stored in `theme` localStorage key)
+* CSS variables update dynamically via `data-theme` attribute
+
+### Responsive Breakpoints
+* **Desktop**: 1200px+ (4-column product grid)
+* **Tablet**: 768px-1199px (2-column grid)
+* **Mobile**: <768px (stacked layout with hamburger menu)
 
 ---
 
-## 📜 License
+## Setup Instructions
+
+### Prerequisites
+* Supabase account (free tier works)
+* Web server (Live Server, npx serve, or similar) – required for component injection
+
+### 1. Supabase Configuration
+
+1. Create a new Supabase project
+2. Run `supabase-schema.sql` in the SQL Editor to create tables and RLS policies
+3. Create a public Storage bucket named `product-images`
+4. Copy your project URL and anon key
+5. Update `js/supabase.js` with your credentials:
+
+```javascript
+const SUPABASE_URL = 'https://your-project.supabase.co';
+const SUPABASE_ANON_KEY = 'your-anon-key';
+```
+
+### 2. Seed Demo Data (Optional)
+
+1. Sign up as a farmer through the UI
+2. Get the farmer's UUID from Supabase Auth → Users
+3. Run `demo-products.sql` with the farmer's UUID to create sample products
+
+### 3. Run Locally
+
+```bash
+# Using npx serve
+npx serve .
+
+# Or with Live Server VS Code extension
+# Right-click index.html → "Open with Live Server"
+```
+
+---
+
+## Environment & Security
+
+### Security Implemented
+* **Row Level Security (RLS)** policies on all database tables
+* **Parameterized queries** via Supabase JS SDK
+* **JWT tokens** managed by Supabase Auth
+* **Input validation** on file uploads (type, size)
+* **Soft delete** pattern preserves data integrity
+* **Transaction rollback** on failed order placement
+
+### What Remains Client-Side Only
+* `theme` preference (Dark/Light mode) stored in localStorage
+* Cart is server-persisted but UI state is ephemeral
+
+---
+
+## Page Flow
+
+### Buyer Journey
+1. **Landing** (`index.html`) → Browse features
+2. **Browse** (`products.html`) → Filter/search products
+3. **Product Detail** (`product-details.html`) → View details, add to cart
+4. **Cart** (`cart.html`) → Review items, adjust quantities
+5. **Checkout** (`checkout.html`) → Enter shipping, place order
+6. **Orders** (`orders.html`) → Track order status
+7. **Profile** (`profile.html`) → Manage account
+
+### Farmer Journey
+1. **Register** as farmer (`signup.html`)
+2. **Dashboard** (`dashboard.html`) → View revenue and stats
+3. **My Products** (`my-products.html`) → Manage inventory
+4. **Orders** (`orders.html`) → View orders for your products
+
+---
+
+## Testing Checklist
+
+### Authentication
+- [ ] Signup as buyer → redirects to products
+- [ ] Signup as farmer → redirects to dashboard
+- [ ] Login with wrong password → shows error toast
+- [ ] Direct URL to protected page while logged out → redirects to login
+- [ ] Google OAuth flow works
+
+### Products
+- [ ] Products load from Supabase on marketplace
+- [ ] Category filter works
+- [ ] Search filters in real-time
+- [ ] Product detail page shows correct data
+- [ ] Out-of-stock products don't appear in grid
+
+### Cart
+- [ ] Add to cart increments navbar badge
+- [ ] Adding same product twice increments quantity
+- [ ] Remove from cart decrements badge
+- [ ] Cart persists across page refresh
+- [ ] Empty cart shows appropriate UI
+
+### Orders
+- [ ] Checkout creates order with correct total
+- [ ] Order appears in buyer's order list
+- [ ] Stock decrements after order
+- [ ] Farmer sees order items for their products
+
+### Farmer Features
+- [ ] Can create product with image upload
+- [ ] Invalid file type shows error
+- [ ] Soft delete works (product disappears from market)
+- [ ] Dashboard shows revenue stats
+
+---
+
+## Future Enhancements
+
+* **Payment Gateway Integration** (Razorpay/Stripe)
+* **Real-time Updates** via Supabase Realtime
+* **Email Notifications** via Supabase Edge Functions
+* **Messaging System** between buyers and farmers
+* **Order Status Notifications**
+* **Admin Dashboard** for moderation
+* **Product Reviews & Ratings**
+* **Inventory CSV Import** for farmers
+
+---
+
+## License
 
 Open for educational and development use.
 
 ---
 
-🚜 *Grow together. Shop local. Forge the future of farming.*
+*Grow together. Shop local. Forge the future of farming.*

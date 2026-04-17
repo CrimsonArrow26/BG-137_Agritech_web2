@@ -1,36 +1,45 @@
-/**
- * MAIN.JS
- * Requires utils.js. Handles global injection, dark mode, and UI init.
- */
+// ============================================================
+// main.js — Farmer Marketplace
+// Supabase backend integration
+// ============================================================
 
 document.addEventListener('DOMContentLoaded', async () => {
-    Utils.logAction('App Initialized');
-    initDarkMode();
+  Utils.logAction('App Initialized');
+  initDarkMode();
 
-    // Inject Components
-    const hasNav = document.getElementById('navbar-container');
-    const hasFoot = document.getElementById('footer-container');
-    
-    // Use Promise.all for faster parallel loading
-    const promises = [];
-    if(hasNav) promises.push(Utils.injectComponent('components/navbar.html', 'navbar-container'));
-    if(hasFoot) promises.push(Utils.injectComponent('components/footer.html', 'footer-container'));
-    
-    await Promise.all(promises);
-    Utils.logAction('Components Injected');
+  // Initialize Supabase Auth State Listener
+  // Use window.supabase which is set by supabase.js after creating the client
+  const supabaseClient = window.supabase || window.supabaseClient;
+  if (supabaseClient && supabaseClient.auth) {
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_OUT') {
+        window.location.href = '/login.html';
+      }
+    });
+  }
 
-    if (hasNav) bindNavbarEvents();
-    
-    // Hide Global Loader
-    Utils.hideLoader();
+  // Inject Components
+  const hasNav = document.getElementById('navbar-container');
+  const hasFoot = document.getElementById('footer-container');
+
+  const promises = [];
+  if (hasNav) promises.push(Utils.injectComponent('components/navbar.html', 'navbar-container'));
+  if (hasFoot) promises.push(Utils.injectComponent('components/footer.html', 'footer-container'));
+
+  await Promise.all(promises);
+  Utils.logAction('Components Injected');
+
+  if (hasNav) await bindNavbarEvents();
+
+  Utils.hideLoader();
 });
 
 function initDarkMode() {
-    const isDark = Utils.getStorage('fc_darkmode', false);
-    if(isDark) document.documentElement.setAttribute('data-theme', 'dark');
+  const isDark = Utils.getStorage('theme') === 'dark';
+  if (isDark) document.documentElement.setAttribute('data-theme', 'dark');
 }
 
-function bindNavbarEvents() {
+async function bindNavbarEvents() {
     // Scroll logic
     const navbar = document.querySelector('.navbar');
     if (navbar) {
@@ -60,10 +69,10 @@ function bindNavbarEvents() {
             const currentlyDark = document.documentElement.getAttribute('data-theme') === 'dark';
             if (currentlyDark) {
                 document.documentElement.removeAttribute('data-theme');
-                Utils.setStorage('fc_darkmode', false);
+                Utils.setStorage('theme', 'light');
             } else {
                 document.documentElement.setAttribute('data-theme', 'dark');
-                Utils.setStorage('fc_darkmode', true);
+                Utils.setStorage('theme', 'dark');
             }
             Utils.logAction('Toggled Dark Mode', { isDark: !currentlyDark });
         });
@@ -78,46 +87,64 @@ function bindNavbarEvents() {
         });
     }
 
-    // Auth State
-    const session = Utils.getStorage('fc_session');
-    const authActions = document.getElementById('auth-actions');
-    const unauthActions = document.getElementById('unauth-actions');
-    
-    if (session && session.isLoggedIn) {
-        if(unauthActions) unauthActions.style.display = 'none';
-        if(authActions) {
-            authActions.style.display = 'flex';
-            const navUserName = document.getElementById('navUserName');
-            const navUserImg = document.getElementById('navUserImg');
-            if(navUserName) navUserName.textContent = session.user.name.split(' ')[0];
-            if(navUserImg) navUserImg.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(session.user.name)}&background=1B4332&color=fff`;
-        }
-    } else {
-        if(authActions) authActions.style.display = 'none';
-        if(unauthActions) unauthActions.style.display = 'flex';
-    }
+  // Auth State
+  const authActions = document.getElementById('auth-actions');
+  const unauthActions = document.getElementById('unauth-actions');
 
-    // Setup Logout
-    const logoutBtn = document.getElementById('logoutBtn');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            localStorage.removeItem('fc_session');
-            Utils.logAction('User Logged Out');
-            window.location.href = 'index.html';
-        });
-    }
+  const currentUser = await getCurrentUser();
+  if (currentUser) {
+    if (unauthActions) unauthActions.style.display = 'none';
+    if (authActions) {
+      authActions.style.display = 'flex';
+      const navUserName = document.getElementById('navUserName');
+      const navUserImg = document.getElementById('navUserImg');
+      if (navUserName) navUserName.textContent = currentUser.profile.full_name.split(' ')[0];
+      if (navUserImg) navUserImg.src = currentUser.profile.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.profile.full_name)}&background=1B4332&color=fff`;
 
-    // Initial Cart State update
-    window.updateNavCartCount = function() {
-        const cart = Utils.getStorage('fc_cart', []);
-        const total = cart.reduce((s, i) => s + i.quantity, 0);
-        const ct = document.getElementById('navCartCount');
-        if (ct) {
-            ct.textContent = total;
-            ct.style.display = total > 0 ? 'flex' : 'none';
-        }
-    };
-    if (window.updateNavCartCount) window.updateNavCartCount();
+      // Show role-specific dropdown menu
+      const buyerMenu = document.getElementById('buyer-menu');
+      const farmerMenu = document.getElementById('farmer-menu');
+      if (currentUser.profile.role === 'farmer') {
+        if (farmerMenu) farmerMenu.style.display = 'block';
+        if (buyerMenu) buyerMenu.style.display = 'none';
+      } else {
+        if (buyerMenu) buyerMenu.style.display = 'block';
+        if (farmerMenu) farmerMenu.style.display = 'none';
+      }
+    }
+  } else {
+    if (authActions) authActions.style.display = 'none';
+    if (unauthActions) unauthActions.style.display = 'flex';
+  }
+
+  // Setup Logout
+  const logoutBtn = document.getElementById('logoutBtn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      await logout();
+    });
+  }
+
+  // Cart Badge Update - only if cart.js is loaded
+  window.updateNavCartCount = async function() {
+    // Check if getCartCount is available (from cart.js)
+    if (typeof getCartCount !== 'function') {
+      // cart.js not loaded on this page, skip cart badge update
+      return;
+    }
+    try {
+      const count = await getCartCount();
+      const ct = document.getElementById('navCartCount');
+      if (ct) {
+        ct.textContent = count;
+        ct.style.display = count > 0 ? 'flex' : 'none';
+      }
+    } catch (err) {
+      // Silently fail if cart can't be loaded (user not logged in or other error)
+      console.log('Cart count unavailable:', err.message);
+    }
+  };
+  await window.updateNavCartCount();
 }
 

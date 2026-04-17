@@ -79,27 +79,135 @@
 .stat-content h4 { color: var(--text-secondary); font-size: 0.9rem; margin:0; }
 .stat-content h2 { color: var(--text-primary); font-size: 1.5rem; margin:0; font-weight: 800;}
 
-/* Data Tables */
+/* Premium Data Tables */
 .table-container {
     background: var(--bg-alt);
     border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    overflow: hidden; box-shadow: var(--shadow-sm);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
 }
 
-.table-header { padding: 1.25rem 1.5rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); }
-.table-header h3 { margin: 0; font-size: 1.1rem; }
+.table-header {
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--bg-cream);
+}
 
-.data-table { width: 100%; border-collapse: collapse; text-align: left;}
-.data-table th, .data-table td { padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-color); }
-.data-table th { background-color: var(--bg-color); color: var(--text-secondary); font-weight: 600; font-size: 0.85rem; text-transform: uppercase;}
-.data-table tr:last-child td { border-bottom: none; }
-.data-table tbody tr:hover { background-color: rgba(0,0,0,0.02); }
-[data-theme="dark"] .data-table tbody tr:hover { background-color: rgba(255,255,255,0.02); }
+.table-header h3 {
+    margin: 0;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    color: var(--text-primary);
+}
 
-.status-badge { padding: 0.25rem 0.75rem; border-radius: 99px; font-size: 0.8rem; font-weight: 600; }
-.status-pending { background: #fef3c7; color: #92400e; }
-.status-delivered { background: #dcfce7; color: #166534; }
+.data-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    text-align: left;
+}
+
+.data-table th, .data-table td {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border-soft);
+}
+
+.data-table th {
+    background-color: var(--bg-color);
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.data-table tbody tr {
+    transition: var(--transition-fast);
+}
+
+.data-table tbody tr:hover {
+    background-color: rgba(45, 106, 79, 0.03);
+}
+
+[data-theme="dark"] .data-table tbody tr:hover {
+    background-color: rgba(82, 183, 136, 0.05);
+}
+
+.data-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Premium Status Badges */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 99px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.status-badge::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+}
+
+.status-pending {
+    background: rgba(233, 196, 106, 0.15);
+    color: #b48a0a;
+}
+.status-pending::before { background: var(--warning); }
+
+.status-delivered {
+    background: rgba(64, 145, 108, 0.12);
+    color: var(--success);
+}
+.status-delivered::before { background: var(--success); }
+
+.status-cancelled {
+    background: rgba(224, 122, 95, 0.12);
+    color: var(--danger);
+}
+.status-cancelled::before { background: var(--danger); }
+
+/* Premium Dropdown for Dashboard */
+.dashboard-dropdown {
+    appearance: none;
+    -webkit-appearance: none;
+    padding: 10px 40px 10px 16px;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+    background: var(--bg-alt);
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    min-width: 140px;
+}
+
+.dashboard-dropdown:hover {
+    border-color: var(--primary-light);
+    box-shadow: var(--shadow-sm);
+}
+
+.dashboard-dropdown:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.15);
+}
 
 @media (max-width: 768px) {
     .dashboard-layout { flex-direction: column; }

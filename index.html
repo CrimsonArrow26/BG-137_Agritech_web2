@@ -3,62 +3,209 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Farmer Marketplace - Home</title>
+    <title>Farmer Marketplace - Fresh from Farm to Table</title>
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- CSS -->
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/navbar.css">
     <link rel="stylesheet" href="css/footer.css">
+    <style>
+        /* Splash Screen Animations */
+        @keyframes splashPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        @keyframes splashBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes splashTextFade {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+        #splash-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        #splash-screen.skip-splash {
+            display: none !important;
+        }
+    </style>
+    <script>
+        // Splash Screen Control - Shows on first visit AND hard refresh (Ctrl+F5)
+        // Does NOT show on normal refresh/reload
+        (function() {
+            const SPLASH_DURATION = 2500; // 2.5 seconds
+            const FIRST_VISIT_KEY = 'hasVisitedBefore';
+            const SESSION_KEY = 'sessionActive';
+
+            // Check if this is a hard refresh:
+            // Hard refresh clears sessionStorage but keeps localStorage
+            // Normal refresh preserves sessionStorage
+            const hadSessionBefore = sessionStorage.getItem(SESSION_KEY);
+            const hasVisitedBefore = localStorage.getItem(FIRST_VISIT_KEY);
+
+            // Set session marker for this session (cleared on hard refresh)
+            sessionStorage.setItem(SESSION_KEY, 'true');
+
+            // Decide whether to show splash:
+            // 1. First time visitor (no localStorage marker)
+            // 2. Hard refresh (sessionStorage was cleared)
+            const shouldShowSplash = !hasVisitedBefore || !hadSessionBefore;
+
+            if (shouldShowSplash) {
+                // Mark as visited for future
+                localStorage.setItem(FIRST_VISIT_KEY, 'true');
+
+                // Show splash screen
+                document.addEventListener('DOMContentLoaded', function() {
+                    const splash = document.getElementById('splash-screen');
+                    if (!splash) return;
+
+                    // Ensure splash is visible
+                    splash.classList.remove('skip-splash');
+
+                    // Hide after duration with fade effect
+                    setTimeout(function() {
+                        splash.classList.add('hidden');
+
+                        // Remove from DOM after fade completes
+                        setTimeout(function() {
+                            splash.style.display = 'none';
+                        }, 600);
+                    }, SPLASH_DURATION);
+                });
+            } else {
+                // Normal refresh - skip splash when DOM is ready
+                document.addEventListener('DOMContentLoaded', function() {
+                    const splash = document.getElementById('splash-screen');
+                    if (splash) splash.classList.add('skip-splash');
+                });
+            }
+        })();
+    </script>
 </head>
 <body>
-    <!-- Global Loader -->
-    <div id="global-loader" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--background); display:flex; justify-content:center; align-items:center; z-index:9999; transition: opacity 0.3s ease;">
-        <i class="fa-solid fa-seedling fa-spin fa-3x" style="color:var(--primary);"></i>
+    <!-- Premium Splash Screen - First Visit & Hard Refresh Only -->
+    <!-- Content loads underneath while splash shows; splash hides via opacity transition -->
+    <div id="splash-screen" style="position: fixed; inset: 0; background: linear-gradient(135deg, var(--bg-cream) 0%, var(--bg-color) 100%); z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.8s ease; will-change: opacity;">
+        <div class="splash-content" style="text-align: center; animation: splashPulse 2s ease-in-out infinite;">
+            <div class="splash-logo" style="width: 120px; height: 120px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 2rem; box-shadow: 0 20px 60px rgba(45, 106, 79, 0.3);">
+                <i class="fa-solid fa-seedling fa-3x" style="color: white;"></i>
+            </div>
+            <h1 style="font-family: 'Playfair Display', serif; font-size: 2.5rem; color: var(--primary-color); margin-bottom: 0.5rem; letter-spacing: -0.02em;">Farmer Marketplace</h1>
+            <p style="font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 2rem;">Fresh from Farm to Table</p>
+            <div class="splash-loader" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                <span class="splash-dot" style="width: 10px; height: 10px; background: var(--primary); border-radius: 50%; animation: splashBounce 0.6s ease infinite;"></span>
+                <span class="splash-dot" style="width: 10px; height: 10px; background: var(--primary); border-radius: 50%; animation: splashBounce 0.6s ease infinite 0.1s;"></span>
+                <span class="splash-dot" style="width: 10px; height: 10px; background: var(--primary); border-radius: 50%; animation: splashBounce 0.6s ease infinite 0.2s;"></span>
+            </div>
+            <p class="splash-text" style="margin-top: 1rem; color: var(--text-muted); font-size: 0.9rem; animation: splashTextFade 1.5s ease infinite;">Harvesting freshness...</p>
+        </div>
     </div>
 
     <div id="navbar-container"></div>
 
-    <main>
-        <section class="hero-section" style="padding: 100px 20px; text-align: center; background: linear-gradient(135deg, var(--bg-offset), var(--background));">
-            <h1 style="font-size: 3.5rem; margin-bottom: 20px; color: var(--primary); font-family: 'Playfair Display', serif;">Fresh from Farm to Table</h1>
-            <p style="font-size: 1.2rem; color: var(--text-muted); max-width: 600px; margin: 0 auto 30px; line-height: 1.6;">Discover the finest organic produce straight from local farmers. Sustainable, fresh, and delivered to your doorstep.</p>
-            <a href="products.html" class="btn" style="padding: 15px 35px; font-size: 1.1rem; background: var(--primary); color: white; border-radius: 30px; text-decoration: none; display: inline-block; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(45, 106, 79, 0.3); font-weight: 500;">
-                <i class="fa-solid fa-basket-shopping"></i> Shop Now
-            </a>
+    <main class="page-container">
+        <!-- Premium Hero Section with Organic Shapes -->
+        <section class="hero-section" style="padding: 140px 0 120px; text-align: center; background: linear-gradient(180deg, var(--bg-cream) 0%, var(--bg-color) 100%); position: relative; overflow: hidden;">
+            <div class="container" style="max-width: var(--max-width); margin: 0 auto; padding: 0 1.5rem;">
+            <!-- Organic Background Shapes -->
+            <div class="organic-shape organic-shape-1" style="width: 500px; height: 500px; background: linear-gradient(135deg, rgba(82, 183, 136, 0.15), rgba(163, 177, 138, 0.1)); top: -150px; right: -100px;"></div>
+            <div class="organic-shape organic-shape-2" style="width: 350px; height: 350px; background: linear-gradient(135deg, rgba(212, 163, 115, 0.12), rgba(250, 237, 205, 0.1)); bottom: -80px; left: -80px;"></div>
+            <div class="organic-shape" style="width: 200px; height: 200px; background: linear-gradient(135deg, rgba(26, 77, 58, 0.06), rgba(82, 183, 136, 0.08)); top: 40%; left: 10%;"></div>
+
+            <div style="position: relative; z-index: 1; max-width: 800px; margin: 0 auto;">
+                <div style="display: inline-flex; align-items: center; gap: 0.5rem; background: var(--bg-alt); padding: 0.5rem 1rem; border-radius: 50px; margin-bottom: 2rem; box-shadow: var(--shadow-sm);">
+                    <i class="fa-solid fa-leaf" style="color: var(--primary-accent);"></i>
+                    <span style="font-size: 0.875rem; color: var(--text-secondary); font-weight: 500;">100% Organic & Sustainable</span>
+                </div>
+
+                <h1 style="font-size: clamp(2.5rem, 6vw, 4.5rem); margin-bottom: 1.5rem; color: var(--primary-color); font-family: 'Playfair Display', serif; font-weight: 700; line-height: 1.1; letter-spacing: -0.02em;">
+                    Fresh from<br><span style="color: var(--secondary-color);">Farm</span> to Table
+                </h1>
+
+                <p style="font-size: 1.25rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto 2.5rem; line-height: 1.8; font-weight: 400;">
+                    Discover the finest organic produce straight from local farmers. Sustainable, fresh, and delivered to your doorstep.
+                </p>
+
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <a href="products.html" class="btn btn-primary btn-lg" style="box-shadow: 0 8px 30px rgba(26, 77, 58, 0.25);">
+                        <i class="fa-solid fa-basket-shopping"></i> Shop Now
+                    </a>
+                    <a href="about.html" class="btn btn-outline btn-lg">
+                        <i class="fa-solid fa-arrow-right"></i> Learn More
+                    </a>
+                </div>
+
+                <!-- Stats -->
+                <div style="display: flex; justify-content: center; gap: 3rem; margin-top: 4rem; flex-wrap: wrap;">
+                    <div style="text-align: center;">
+                        <div style="font-family: 'Playfair Display', serif; font-size: 2.5rem; color: var(--primary-color); font-weight: 700;">500+</div>
+                        <div style="font-size: 0.875rem; color: var(--text-muted); font-weight: 500;">Local Farmers</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-family: 'Playfair Display', serif; font-size: 2.5rem; color: var(--primary-color); font-weight: 700;">10k+</div>
+                        <div style="font-size: 0.875rem; color: var(--text-muted); font-weight: 500;">Happy Customers</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-family: 'Playfair Display', serif; font-size: 2.5rem; color: var(--primary-color); font-weight: 700;">24h</div>
+                        <div style="font-size: 0.875rem; color: var(--text-muted); font-weight: 500;">Fast Delivery</div>
+                    </div>
+                </div>
+            </div>
+            </div>
         </section>
 
-        <section class="features-section" style="padding: 80px 20px; max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px;">
-            <div class="feature-card" style="text-align:center; padding: 40px 30px; border-radius: 16px; background: var(--bg-offset); box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: transform 0.3s ease;">
-                <div style="width: 80px; height: 80px; background: rgba(45, 106, 79, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: var(--primary);">
-                    <i class="fa-solid fa-leaf fa-2x"></i>
+        <!-- Premium Features Section -->
+        <section class="features-section" style="padding: 100px 0; position: relative;">
+            <div class="container" style="max-width: var(--max-width); margin: 0 auto; padding: 0 1.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem;">
+            <!-- Feature Card 1 -->
+            <div class="card" style="text-align: center; padding: 3rem 2rem;">
+                <div style="width: 90px; height: 90px; background: linear-gradient(135deg, rgba(64, 145, 108, 0.12), rgba(82, 183, 136, 0.08)); border-radius: 24px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; color: var(--success); position: relative; overflow: hidden;">
+                    <div style="position: absolute; inset: 0; background: linear-gradient(135deg, transparent, rgba(255,255,255,0.4)); border-radius: 24px;"></div>
+                    <i class="fa-solid fa-leaf fa-2x" style="position: relative; z-index: 1;"></i>
                 </div>
-                <h3 style="font-size: 1.5rem; margin-bottom: 15px; color: var(--text-main);">100% Organic</h3>
-                <p style="color: var(--text-muted); line-height: 1.6;">We ensure all our listed farmers meet strict organic farming standards without harmful chemicals.</p>
+                <h3 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">100% Organic</h3>
+                <p style="color: var(--text-secondary); line-height: 1.8; font-size: 0.95rem;">We ensure all our listed farmers meet strict organic farming standards without harmful chemicals or pesticides.</p>
             </div>
-            <div class="feature-card" style="text-align:center; padding: 40px 30px; border-radius: 16px; background: var(--bg-offset); box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: transform 0.3s ease;">
-                <div style="width: 80px; height: 80px; background: rgba(45, 106, 79, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: var(--primary);">
-                    <i class="fa-solid fa-truck-fast fa-2x"></i>
+
+            <!-- Feature Card 2 -->
+            <div class="card" style="text-align: center; padding: 3rem 2rem;">
+                <div style="width: 90px; height: 90px; background: linear-gradient(135deg, rgba(188, 108, 37, 0.12), rgba(221, 161, 94, 0.08)); border-radius: 24px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; color: var(--secondary-color); position: relative; overflow: hidden;">
+                    <div style="position: absolute; inset: 0; background: linear-gradient(135deg, transparent, rgba(255,255,255,0.4)); border-radius: 24px;"></div>
+                    <i class="fa-solid fa-truck-fast fa-2x" style="position: relative; z-index: 1;"></i>
                 </div>
-                <h3 style="font-size: 1.5rem; margin-bottom: 15px; color: var(--text-main);">Fast Delivery</h3>
-                <p style="color: var(--text-muted); line-height: 1.6;">From the farm directly to your kitchen within 24 hours to maintain ultimate freshness.</p>
+                <h3 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Fast Delivery</h3>
+                <p style="color: var(--text-secondary); line-height: 1.8; font-size: 0.95rem;">From the farm directly to your kitchen within 24 hours to maintain ultimate freshness and nutritional value.</p>
             </div>
-            <div class="feature-card" style="text-align:center; padding: 40px 30px; border-radius: 16px; background: var(--bg-offset); box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: transform 0.3s ease;">
-                <div style="width: 80px; height: 80px; background: rgba(45, 106, 79, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: var(--primary);">
-                    <i class="fa-solid fa-handshake fa-2x"></i>
+
+            <!-- Feature Card 3 -->
+            <div class="card" style="text-align: center; padding: 3rem 2rem;">
+                <div style="width: 90px; height: 90px; background: linear-gradient(135deg, rgba(26, 77, 58, 0.12), rgba(45, 106, 79, 0.08)); border-radius: 24px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; color: var(--primary-color); position: relative; overflow: hidden;">
+                    <div style="position: absolute; inset: 0; background: linear-gradient(135deg, transparent, rgba(255,255,255,0.4)); border-radius: 24px;"></div>
+                    <i class="fa-solid fa-handshake fa-2x" style="position: relative; z-index: 1;"></i>
                 </div>
-                <h3 style="font-size: 1.5rem; margin-bottom: 15px; color: var(--text-main);">Fair Trade</h3>
-                <p style="color: var(--text-muted); line-height: 1.6;">We eliminate the middlemen so that our farmers get the true and fair value of their hard work.</p>
+                <h3 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Fair Trade</h3>
+                <p style="color: var(--text-secondary); line-height: 1.8; font-size: 0.95rem;">We eliminate the middlemen so that our farmers get the true and fair value of their hard work and dedication.</p>
+            </div>
             </div>
         </section>
     </main>
 
     <div id="footer-container"></div>
 
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- Scripts -->
     <script src="js/utils.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/auth.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>

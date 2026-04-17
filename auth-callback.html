@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authenticating - Farmer Marketplace</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%);
+            font-family: 'Roboto', sans-serif;
+        }
+        .callback-container {
+            text-align: center;
+            padding: 40px;
+        }
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid #e2e8f0;
+            border-top-color: #2d5a27;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 24px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        h2 {
+            font-family: 'Playfair Display', serif;
+            color: #1a1a2e;
+            margin-bottom: 12px;
+            font-size: 1.75rem;
+        }
+        p {
+            color: #718096;
+            font-size: 1rem;
+        }
+        .error-message {
+            display: none;
+            background: #fee;
+            border: 1px solid #fcc;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 24px;
+            color: #c53030;
+        }
+        .role-selection {
+            display: none;
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+        .role-selection h3 {
+            font-family: 'Playfair Display', serif;
+            color: #1a1a2e;
+            margin-bottom: 24px;
+            font-size: 1.5rem;
+        }
+        .role-option {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .role-option:hover {
+            border-color: #2d5a27;
+            background: #f8faf7;
+        }
+        .role-option i {
+            font-size: 1.5rem;
+            color: #2d5a27;
+            margin-right: 16px;
+        }
+        .role-option h4 {
+            color: #1a1a2e;
+            margin-bottom: 4px;
+        }
+        .role-option p {
+            font-size: 0.85rem;
+            color: #718096;
+        }
+    </style>
+</head>
+<body>
+    <div class="callback-container" id="loadingState">
+        <div class="spinner"></div>
+        <h2>Completing Sign In...</h2>
+        <p>Please wait while we authenticate you with Google.</p>
+        <div class="error-message" id="errorMessage"></div>
+    </div>
+
+    <div class="role-selection" id="roleSelection">
+        <h3>Choose Your Role</h3>
+        <p style="margin-bottom: 24px; color: #718096;">Please select how you want to use Farmer Marketplace:</p>
+        
+        <div class="role-option" onclick="selectRole('buyer')">
+            <i class="fa-solid fa-basket-shopping"></i>
+            <div>
+                <h4>I want to Buy Products</h4>
+                <p>Browse and purchase fresh produce directly from farmers</p>
+            </div>
+        </div>
+        
+        <div class="role-option" onclick="selectRole('farmer')">
+            <i class="fa-solid fa-tractor"></i>
+            <div>
+                <h4>I am a Farmer/Seller</h4>
+                <p>List and sell your farm products to customers</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/supabase.js"></script>
+    
+    <script>
+        async function handleAuthCallback() {
+            try {
+                // Get the current session - Supabase automatically handles the OAuth callback
+                const { data: { session }, error } = await supabase.auth.getSession();
+                
+                if (error) throw error;
+                
+                if (!session) {
+                    showError('Authentication failed. Please try again.');
+                    setTimeout(() => window.location.href = '/login.html', 3000);
+                    return;
+                }
+
+                // Check if user has a profile
+                const { data: profile, error: profileError } = await supabase
+                    .from('user_profiles')
+                    .select('role, full_name')
+                    .eq('id', session.user.id)
+                    .single();
+
+                // If no profile exists (new Google user), show role selection
+                if (profileError || !profile) {
+                    showRoleSelection(session.user.id, session.user.user_metadata?.full_name || session.user.email);
+                    return;
+                }
+
+                // User has profile - redirect based on role
+                redirectBasedOnRole(profile.role);
+
+            } catch (err) {
+                console.error('Auth callback error:', err);
+                showError('Something went wrong. Redirecting to login...');
+                setTimeout(() => window.location.href = '/login.html', 3000);
+            }
+        }
+
+        function showError(message) {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'block';
+            document.getElementById('errorMessage').textContent = message;
+        }
+
+        function showRoleSelection(userId, fullName) {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('roleSelection').style.display = 'block';
+            
+            // Store user info for role selection
+            window.pendingUserId = userId;
+            window.pendingUserName = fullName;
+        }
+
+        async function selectRole(role) {
+            try {
+                document.getElementById('roleSelection').innerHTML = `
+                    <div class="spinner"></div>
+                    <h3>Creating your account...</h3>
+                `;
+
+                // Create user profile with selected role
+                const { error } = await supabase
+                    .from('user_profiles')
+                    .insert({
+                        id: window.pendingUserId,
+                        full_name: window.pendingUserName,
+                        role: role
+                    });
+
+                if (error) throw error;
+
+                Utils?.showToast?.('Account created successfully!', 'success');
+                redirectBasedOnRole(role);
+            } catch (err) {
+                console.error('Profile creation error:', err);
+                showError('Failed to create profile. Please try again.');
+            }
+        }
+
+        function redirectBasedOnRole(role) {
+            if (role === 'farmer') {
+                window.location.href = '/dashboard.html';
+            } else {
+                window.location.href = '/products.html';
+            }
+        }
+
+        // Handle the callback on page load
+        handleAuthCallback();
+    </script>
+</body>
+</html>

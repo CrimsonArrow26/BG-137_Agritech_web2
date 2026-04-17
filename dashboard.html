@@ -22,21 +22,175 @@
     <div id="navbar-container"></div>
 
     <main class="page-container" style="padding-top: 100px; padding-bottom: 60px;">
+        <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 1.5rem;">
+        <!-- Header Section -->
         <div class="dashboard-header" style="text-align: center; margin-bottom: 40px;">
-            <h1 style="color: var(--primary); font-family: 'Playfair Display', serif; font-size: 2.5rem;">Your Dashboard</h1>
+            <h1 id="dashboard-title" style="color: var(--primary); font-family: 'Playfair Display', serif; font-size: 2.5rem;">Dashboard</h1>
             <p id="dashboard-role" style="color: var(--text-muted); font-size: 1.1rem; margin-top: 10px;"></p>
         </div>
-        
-        <div id="dashboard-content">
-            <!-- Dynamically injected via JS -->
+
+        <!-- FARMER DASHBOARD -->
+        <div id="farmer-dashboard" style="display: none;">
+            <!-- Quick Action Buttons -->
+            <div class="farmer-actions" style="display: flex; gap: 15px; justify-content: center; margin-bottom: 40px; flex-wrap: wrap;">
+                <a href="add-product.html" class="btn btn-primary" style="padding: 14px 28px; border-radius: 30px; display: flex; align-items: center; gap: 10px;">
+                    <i class="fa-solid fa-plus"></i> Add New Product
+                </a>
+                <a href="my-products.html" class="btn btn-outline" style="padding: 14px 28px; border-radius: 30px; display: flex; align-items: center; gap: 10px;">
+                    <i class="fa-solid fa-wheat-awn"></i> My Products
+                </a>
+                <a href="farmer-orders.html" class="btn btn-outline" style="padding: 14px 28px; border-radius: 30px; display: flex; align-items: center; gap: 10px;">
+                    <i class="fa-solid fa-clipboard-list"></i> Orders Received
+                </a>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; margin-bottom: 40px;">
+                <div class="stat-card" style="background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 24px; border-radius: 16px; text-align: center;">
+                    <i id="stat1Icon" class="fa-solid fa-sack-dollar" style="font-size: 2rem; margin-bottom: 12px; opacity: 0.9;"></i>
+                    <h3 id="stat1Title" style="font-size: 0.9rem; font-weight: 500; opacity: 0.9; margin-bottom: 8px;">Total Revenue</h3>
+                    <p id="stat1Val" style="font-size: 1.75rem; font-weight: 700;">₹0</p>
+                </div>
+                <div class="stat-card" style="background: var(--bg-offset); padding: 24px; border-radius: 16px; text-align: center; border: 1px solid var(--border);">
+                    <i id="stat2Icon" class="fa-solid fa-wheat-awn" style="font-size: 2rem; color: var(--primary); margin-bottom: 12px;"></i>
+                    <h3 id="stat2Title" style="font-size: 0.9rem; font-weight: 500; color: var(--text-muted); margin-bottom: 8px;">Active Products</h3>
+                    <p id="stat2Val" style="font-size: 1.75rem; font-weight: 700; color: var(--primary);">0</p>
+                </div>
+                <div class="stat-card" style="background: var(--bg-offset); padding: 24px; border-radius: 16px; text-align: center; border: 1px solid var(--border);">
+                    <i class="fa-solid fa-boxes-stacked" style="font-size: 2rem; color: var(--primary); margin-bottom: 12px;"></i>
+                    <h3 style="font-size: 0.9rem; font-weight: 500; color: var(--text-muted); margin-bottom: 8px;">Total Sold</h3>
+                    <p id="stat3Val" style="font-size: 1.75rem; font-weight: 700; color: var(--primary);">0</p>
+                </div>
+                <div class="stat-card" style="background: var(--bg-offset); padding: 24px; border-radius: 16px; text-align: center; border: 1px solid var(--border);">
+                    <i class="fa-solid fa-clock-rotate-left" style="font-size: 2rem; color: var(--primary); margin-bottom: 12px;"></i>
+                    <h3 style="font-size: 0.9rem; font-weight: 500; color: var(--text-muted); margin-bottom: 8px;">Pending Orders</h3>
+                    <p id="stat4Val" style="font-size: 1.75rem; font-weight: 700; color: var(--primary);">0</p>
+                </div>
+            </div>
+
+            <!-- Recent Orders Section -->
+            <div class="dashboard-section" style="background: var(--bg-offset); border-radius: 16px; padding: 24px; border: 1px solid var(--border); margin-bottom: 40px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 style="font-family: 'Playfair Display', serif; color: var(--primary);"><i class="fa-solid fa-clipboard-list"></i> Recent Orders</h2>
+                    <a href="farmer-orders.html" style="color: var(--primary); font-weight: 500;">View All <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="border-bottom: 2px solid var(--border);">
+                                <th style="text-align: left; padding: 12px; font-weight: 600; color: var(--text-muted);">Order ID</th>
+                                <th style="text-align: left; padding: 12px; font-weight: 600; color: var(--text-muted);">Product</th>
+                                <th style="text-align: left; padding: 12px; font-weight: 600; color: var(--text-muted);">Date</th>
+                                <th style="text-align: left; padding: 12px; font-weight: 600; color: var(--text-muted);">Amount</th>
+                                <th style="text-align: left; padding: 12px; font-weight: 600; color: var(--text-muted);">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="farmer-recent-orders">
+                            <tr><td colspan="5" style="text-align: center; padding: 24px; color: var(--text-muted);">Loading orders...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- My Products Preview -->
+            <div class="dashboard-section" style="background: var(--bg-offset); border-radius: 16px; padding: 24px; border: 1px solid var(--border);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 style="font-family: 'Playfair Display', serif; color: var(--primary);"><i class="fa-solid fa-wheat-awn"></i> My Products</h2>
+                    <a href="my-products.html" style="color: var(--primary); font-weight: 500;">Manage All <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+                <div id="farmer-products-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+        </div>
+
+        <!-- BUYER DASHBOARD -->
+        <div id="buyer-dashboard" style="display: none;">
+            <!-- Quick Action Buttons -->
+            <div class="buyer-actions" style="display: flex; gap: 15px; justify-content: center; margin-bottom: 40px; flex-wrap: wrap;">
+                <a href="products.html" class="btn btn-primary" style="padding: 14px 28px; border-radius: 30px; display: flex; align-items: center; gap: 10px;">
+                    <i class="fa-solid fa-basket-shopping"></i> Browse Products
+                </a>
+                <a href="orders.html" class="btn btn-outline" style="padding: 14px 28px; border-radius: 30px; display: flex; align-items: center; gap: 10px;">
+                    <i class="fa-solid fa-box-open"></i> My Orders
+                </a>
+                <a href="cart.html" class="btn btn-outline" style="padding: 14px 28px; border-radius: 30px; display: flex; align-items: center; gap: 10px;">
+                    <i class="fa-solid fa-cart-shopping"></i> View Cart
+                </a>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; margin-bottom: 40px;">
+                <div class="stat-card" style="background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 24px; border-radius: 16px; text-align: center;">
+                    <i id="buyer-stat1Icon" class="fa-solid fa-wallet" style="font-size: 2rem; margin-bottom: 12px; opacity: 0.9;"></i>
+                    <h3 id="buyer-stat1Title" style="font-size: 0.9rem; font-weight: 500; opacity: 0.9; margin-bottom: 8px;">Total Spent</h3>
+                    <p id="buyer-stat1Val" style="font-size: 1.75rem; font-weight: 700;">₹0</p>
+                </div>
+                <div class="stat-card" style="background: var(--bg-offset); padding: 24px; border-radius: 16px; text-align: center; border: 1px solid var(--border);">
+                    <i id="buyer-stat2Icon" class="fa-solid fa-box-open" style="font-size: 2rem; color: var(--primary); margin-bottom: 12px;"></i>
+                    <h3 id="buyer-stat2Title" style="font-size: 0.9rem; font-weight: 500; color: var(--text-muted); margin-bottom: 8px;">Orders Placed</h3>
+                    <p id="buyer-stat2Val" style="font-size: 1.75rem; font-weight: 700; color: var(--primary);">0</p>
+                </div>
+                <div class="stat-card" style="background: var(--bg-offset); padding: 24px; border-radius: 16px; text-align: center; border: 1px solid var(--border);">
+                    <i class="fa-solid fa-truck-fast" style="font-size: 2rem; color: var(--primary); margin-bottom: 12px;"></i>
+                    <h3 style="font-size: 0.9rem; font-weight: 500; color: var(--text-muted); margin-bottom: 8px;">Active Orders</h3>
+                    <p id="buyer-stat3Val" style="font-size: 1.75rem; font-weight: 700; color: var(--primary);">0</p>
+                </div>
+                <div class="stat-card" style="background: var(--bg-offset); padding: 24px; border-radius: 16px; text-align: center; border: 1px solid var(--border);">
+                    <i class="fa-solid fa-cart-shopping" style="font-size: 2rem; color: var(--primary); margin-bottom: 12px;"></i>
+                    <h3 style="font-size: 0.9rem; font-weight: 500; color: var(--text-muted); margin-bottom: 8px;">Cart Items</h3>
+                    <p id="buyer-stat4Val" style="font-size: 1.75rem; font-weight: 700; color: var(--primary);">0</p>
+                </div>
+            </div>
+
+            <!-- Recent Orders Section -->
+            <div class="dashboard-section" style="background: var(--bg-offset); border-radius: 16px; padding: 24px; border: 1px solid var(--border); margin-bottom: 40px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 style="font-family: 'Playfair Display', serif; color: var(--primary);"><i class="fa-solid fa-box-open"></i> My Recent Orders</h2>
+                    <a href="orders.html" style="color: var(--primary); font-weight: 500;">View All <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="border-bottom: 2px solid var(--border);">
+                                <th style="text-align: left; padding: 12px; font-weight: 600; color: var(--text-muted);">Order ID</th>
+                                <th style="text-align: left; padding: 12px; font-weight: 600; color: var(--text-muted);">Date</th>
+                                <th style="text-align: left; padding: 12px; font-weight: 600; color: var(--text-muted);">Items</th>
+                                <th style="text-align: left; padding: 12px; font-weight: 600; color: var(--text-muted);">Total</th>
+                                <th style="text-align: left; padding: 12px; font-weight: 600; color: var(--text-muted);">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="buyer-recent-orders">
+                            <tr><td colspan="5" style="text-align: center; padding: 24px; color: var(--text-muted);">Loading orders...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Recommended Products -->
+            <div class="dashboard-section" style="background: var(--bg-offset); border-radius: 16px; padding: 24px; border: 1px solid var(--border);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 style="font-family: 'Playfair Display', serif; color: var(--primary);"><i class="fa-solid fa-star"></i> Recommended For You</h2>
+                    <a href="products.html" style="color: var(--primary); font-weight: 500;">Browse All <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+                <div id="buyer-recommendations-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+        </div>
         </div>
     </main>
 
     <div id="footer-container"></div>
 
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- Scripts -->
     <script src="js/utils.js"></script>
-    <script src="js/main.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/auth.js"></script>
     <script src="js/dashboard.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>

@@ -1,0 +1,27 @@
+# Secrets and Configuration
+# Uncomment the line below after copying config.js to config.local.js
+# js/config.js
+js/config.local.js
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Dependencies
+node_modules/
