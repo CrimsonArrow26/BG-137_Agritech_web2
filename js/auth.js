@@ -210,12 +210,110 @@ async function protectRoute(allowedRoles = []) {
   return current;
 }
 
+// ── Email inline validation helpers ─────────────────────────────
+function showEmailInlineMsg(html, isError) {
+  removeEmailInlineMsg();
+  const emailInput = document.getElementById('signupEmail');
+  if (!emailInput) return;
+
+  const msg = document.createElement('div');
+  msg.id    = 'email-inline-msg';
+  msg.style.cssText = `
+    margin-top: 8px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    animation: fadeInDown 0.2s ease;
+    ${isError
+      ? 'background:rgba(231,76,60,0.1);color:#c0392b;border:1px solid rgba(231,76,60,0.2);'
+      : 'background:rgba(39,174,96,0.1);color:#27ae60;border:1px solid rgba(39,174,96,0.2);'
+    }
+  `;
+  msg.innerHTML = html;
+  emailInput.parentNode.insertBefore(msg, emailInput.nextSibling);
+}
+
+function removeEmailInlineMsg() {
+  document.getElementById('email-inline-msg')?.remove();
+}
+
+
 document.addEventListener('DOMContentLoaded', () => {
   const signupForm = document.getElementById('signupForm');
   if (signupForm) {
     // Inject password strength meter
     initPasswordStrength();
 
+    // ── Layer 1: Already logged in? Show banner immediately ──
+    (async function checkExistingSession() {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) return; // not logged in — show form normally
+
+        const provider = session.user.app_metadata?.provider || 'email';
+        const email    = session.user.email || '';
+
+        // Replace form with "already registered" UI
+        signupForm.innerHTML = `
+          <div style="text-align:center;padding:20px 0;">
+            <div style="width:80px;height:80px;background:linear-gradient(135deg,rgba(64,145,108,0.15),rgba(82,183,136,0.1));border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;">
+              <i class="fa-solid fa-circle-check fa-2x" style="color:var(--primary);"></i>
+            </div>
+            <h3 style="font-family:'Playfair Display',serif;color:var(--primary);margin-bottom:10px;font-size:1.5rem;">You're already registered!</h3>
+            <p style="color:var(--text-secondary);line-height:1.7;margin-bottom:8px;">Signed in as:</p>
+            <p style="font-weight:700;color:var(--text-main);margin-bottom:6px;font-size:1rem;">${email}</p>
+            <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:24px;">
+              via <strong>${provider === 'google' ? '<i class="fa-brands fa-google"></i> Google' : '<i class="fa-solid fa-envelope"></i> Email'}</strong>
+            </p>
+            <a href="dashboard.html" class="btn btn-primary" style="display:inline-block;padding:12px 28px;border-radius:30px;text-decoration:none;margin-bottom:12px;">
+              <i class="fa-solid fa-gauge"></i> Go to Dashboard
+            </a>
+            <div style="margin-top:12px;">
+              <a href="#" id="signoutLinkBtn" style="color:var(--text-muted);font-size:0.85rem;">Not you? Sign out and use a different account</a>
+            </div>
+          </div>
+        `;
+
+        document.getElementById('signoutLinkBtn')?.addEventListener('click', async (e) => {
+          e.preventDefault();
+          await supabase.auth.signOut();
+          window.location.reload();
+        });
+      } catch { /* silently ignore — form stays visible */ }
+    })();
+
+    // ── Layer 2: Real-time email blur check via RPC ───────────
+    const emailInput = document.getElementById('signupEmail');
+    if (emailInput) {
+      emailInput.addEventListener('blur', async function() {
+        const val = this.value.trim().toLowerCase();
+        if (!val || !val.includes('@')) return;
+
+        try {
+          const { data } = await supabase.rpc('check_email_provider', { p_email: val });
+          removeEmailInlineMsg();
+
+          if (data?.exists) {
+            const isGoogle = data.provider === 'google';
+            showEmailInlineMsg(
+              isGoogle
+                ? `<i class="fa-brands fa-google" style="color:#4285F4;"></i>&nbsp; This email is registered via Google.&nbsp;<a href="login.html" style="color:inherit;font-weight:700;text-decoration:underline;">Sign in with Google</a>`
+                : `<i class="fa-solid fa-circle-info"></i>&nbsp; Already registered.&nbsp;<a href="login.html" style="color:inherit;font-weight:700;text-decoration:underline;">Log in instead</a>`,
+              true
+            );
+          }
+        } catch { /* silent — don't block signup */ }
+      });
+
+      emailInput.addEventListener('focus', removeEmailInlineMsg);
+    }
+
+
+    // ── Layer 3 lives inside the submit listener ──
     signupForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const btn = signupForm.querySelector('button[type="submit"]');
@@ -247,14 +345,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
         Utils.logAction('User Registered', { role: selectedRole, email });
 
-        // If Supabase requires email confirmation, data.session will be null
+        // Layer 3: identities.length === 0 means email already exists
+        // (Supabase quiet-duplicate when email confirmation is ON)
+        if (data.user && data.user.identities && data.user.identities.length === 0) {
+          const { data: providerData } = await supabase.rpc('check_email_provider', { p_email: email });
+          const isGoogle = providerData?.provider === 'google';
+          Utils.showToast(
+            isGoogle
+              ? 'This email is registered via Google. Please use "Sign in with Google".'
+              : 'This email is already registered. Please log in instead.',
+            'error'
+          );
+          if (btn) { btn.disabled = false; btn.textContent = 'Sign Up'; }
+          return;
+        }
+
+        // No session yet = email confirmation required (normal flow)
         if (data.user && !data.session) {
-          // Show the confirmation banner — do NOT redirect yet
           showEmailConfirmationUI(email);
           return;
         }
 
-        // Email confirmation is disabled in Supabase (dev mode) — redirect immediately
+        // Confirmation disabled (dev mode) — redirect immediately
         Utils.showToast('Account created successfully!', 'success');
         if (selectedRole === 'farmer') {
           window.location.href = 'dashboard.html';
