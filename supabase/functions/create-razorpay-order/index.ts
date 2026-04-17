@@ -20,25 +20,9 @@ serve(async (req: Request) => {
   }
 
   try {
-    // 1. Verify caller is an authenticated Supabase user
-    const authHeader = req.headers.get('Authorization');
-    if (!authHeader) {
-      return jsonError('Missing authorization header', 401);
-    }
-
-    const supabase = createClient(
-      Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SUPABASE_ANON_KEY')!,
-      { global: { headers: { Authorization: authHeader } } }
-    );
-
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    if (authError || !user) {
-      return jsonError('Unauthorized', 401);
-    }
-
-    // 2. Parse request body
-    const { amount } = await req.json(); // amount in INR (float)
+    // 1. Parse request body first to get amount
+    const { amount } = await req.json();
+    console.log('[create-razorpay-order] Request amount:', amount);
 
     if (!amount || typeof amount !== 'number' || amount <= 0) {
       return jsonError('Invalid amount', 400);
@@ -59,9 +43,8 @@ serve(async (req: Request) => {
       body: JSON.stringify({
         amount:   Math.round(amount * 100), // convert INR → paise
         currency: 'INR',
-        receipt:  `receipt_${user.id.slice(0, 8)}_${Date.now()}`,
+        receipt:  `receipt_${Date.now()}`,
         notes: {
-          user_id: user.id,
           source:  'farmer_marketplace',
         },
       }),

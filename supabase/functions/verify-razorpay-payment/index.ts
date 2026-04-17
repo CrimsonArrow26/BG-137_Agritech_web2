@@ -19,20 +19,7 @@ serve(async (req: Request) => {
   }
 
   try {
-    // 1. Auth check
-    const authHeader = req.headers.get('Authorization');
-    if (!authHeader) return jsonError('Missing authorization header', 401);
-
-    const supabase = createClient(
-      Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SUPABASE_ANON_KEY')!,
-      { global: { headers: { Authorization: authHeader } } }
-    );
-
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    if (authError || !user) return jsonError('Unauthorized', 401);
-
-    // 2. Parse request body
+    // 1. Parse request body
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = await req.json();
 
     if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {

@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       card.innerHTML = `
         <div class="product-img-wrap">
           <span class="product-badge">${display.category}</span>
-          <img src="${display.image}" alt="${display.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/400x300?text=No+Image'">
+          <img src="${display.image}" alt="${display.title}" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22300%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22400%22 height=%22300%22/%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2218%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22%3ENo Image%3C/text%3E%3C/svg%3E'">
           <button class="quick-view-btn" onclick="window.location.href='product-details.html?id=${display.id}'">Quick View</button>
         </div>
         <div class="product-info">
