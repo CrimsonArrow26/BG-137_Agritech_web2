@@ -56,6 +56,34 @@
                     <div class="pd-guarantee-item"><i class="fa-solid fa-shield-halved text-success"></i> Farm Fresh Guarantee</div>
                     <div class="pd-guarantee-item"><i class="fa-solid fa-truck-fast text-success"></i> Prompt Local Delivery</div>
                 </div>
+                
+                <!-- Product Details Section -->
+                <div class="pd-details-section" style="margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border);">
+                    <h3 style="font-family: 'Playfair Display', serif; margin-bottom: 15px; color: var(--primary);">Product Details</h3>
+                    <div class="pd-details-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 0.95rem;">
+                        <div><strong>Category:</strong> <span id="pd-category" style="text-transform: capitalize;"></span></div>
+                        <div><strong>Unit:</strong> <span id="pd-unit"></span></div>
+                        <div><strong>Stock Available:</strong> <span id="pd-stock"></span></div>
+                        <div><strong>Availability:</strong> <span id="pd-availability"></span></div>
+                        <div><strong>Added:</strong> <span id="pd-date"></span></div>
+                        <div><strong>Product ID:</strong> <span id="pd-sku"></span></div>
+                    </div>
+                </div>
+                
+                <!-- Farmer Info Section -->
+                <div class="pd-farmer-section" style="margin-top: 25px; padding: 20px; background: var(--bg-offset); border-radius: 12px;">
+                    <h3 style="font-family: 'Playfair Display', serif; margin-bottom: 15px; color: var(--primary);"><i class="fa-solid fa-user-tie"></i> Farmer Information</h3>
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 12px;">
+                        <div style="width: 50px; height: 50px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem;">
+                            <i class="fa-solid fa-wheat-awn"></i>
+                        </div>
+                        <div>
+                            <div id="pd-farmer-name" style="font-weight: 600; color: var(--text-main);"></div>
+                            <div id="pd-farmer-phone" style="color: var(--text-muted); font-size: 0.9rem;"><i class="fa-solid fa-phone"></i> <span></span></div>
+                        </div>
+                    </div>
+                    <div id="pd-farmer-address" style="color: var(--text-muted); font-size: 0.9rem;"><i class="fa-solid fa-location-dot"></i> <span></span></div>
+                </div>
             </div>
         </div>
         

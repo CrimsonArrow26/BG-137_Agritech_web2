@@ -38,7 +38,31 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('pd-location').innerHTML = `<i class="fa-solid fa-location-dot"></i> ${product.user_profiles?.address || 'India'}`;
         document.getElementById('pd-price').innerHTML = `${Utils.formatCurrency(product.price)} <span>/ ${product.unit}</span>`;
         document.getElementById('pd-desc').textContent = product.description || 'Fresh farm product';
-        document.getElementById('pd-stock').textContent = `In Stock: ${product.stock_qty} ${product.unit}`;
+        
+        // Product Details Section
+        document.getElementById('pd-category').textContent = product.category;
+        document.getElementById('pd-unit').textContent = product.unit;
+        document.getElementById('pd-stock').textContent = `${product.stock_qty} ${product.unit}`;
+        
+        // Availability status
+        const availabilityEl = document.getElementById('pd-availability');
+        if (product.stock_qty > 10) {
+            availabilityEl.innerHTML = '<span style="color: var(--success);"><i class="fa-solid fa-check-circle"></i> In Stock</span>';
+        } else if (product.stock_qty > 0) {
+            availabilityEl.innerHTML = '<span style="color: orange;"><i class="fa-solid fa-exclamation-circle"></i> Low Stock - Only ' + product.stock_qty + ' left</span>';
+        } else {
+            availabilityEl.innerHTML = '<span style="color: var(--danger);"><i class="fa-solid fa-times-circle"></i> Out of Stock</span>';
+        }
+        
+        document.getElementById('pd-date').textContent = new Date(product.created_at).toLocaleDateString('en-IN', { 
+            year: 'numeric', month: 'short', day: 'numeric' 
+        });
+        document.getElementById('pd-sku').textContent = product.id.slice(0, 8).toUpperCase();
+        
+        // Farmer Info Section
+        document.getElementById('pd-farmer-name').textContent = product.user_profiles?.full_name || 'Unknown Farmer';
+        document.getElementById('pd-farmer-phone').querySelector('span').textContent = product.user_profiles?.phone || 'Not available';
+        document.getElementById('pd-farmer-address').querySelector('span').textContent = product.user_profiles?.address || 'India';
 
         // Hide loader, show container
         if (loader) loader.style.display = 'none';
