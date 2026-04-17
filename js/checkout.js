@@ -1,15 +1,22 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // 1. Session Auth Check
-    const session = Utils.getStorage('fc_session');
-    if (!session || !session.isLoggedIn) {
+document.addEventListener('DOMContentLoaded', async () => {
+    // 1. Session Auth Check - Use Supabase
+    const { data: { session }, error } = await supabase.auth.getSession();
+    if (!session) {
         Utils.showToast('Please log in to checkout!', 'info');
         setTimeout(() => window.location.href = 'login.html', 1500);
         return;
     }
 
+    // Get user profile
+    const { data: profile } = await supabase
+        .from('user_profiles')
+        .select('full_name, phone, address')
+        .eq('id', session.user.id)
+        .single();
+
     // Pre-fill user data
     const nameInput = document.getElementById('chkName');
-    if (nameInput) nameInput.value = session.user.name;
+    if (nameInput && profile) nameInput.value = profile.full_name || '';
 
     // 2. Load Cart Data
     const cart = Utils.getStorage('fc_cart', []);
@@ -52,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const orderId = 'ORD-' + Math.floor(Math.random() * 1000000);
             const newOrder = {
                 id: orderId,
-                userId: session.user.email,
+                userId: session.user.id,
                 date: new Date().toISOString(),
                 items: cart,
                 total: orderTotal.grandTotal,

@@ -133,18 +133,23 @@
         .status-low::before { background: var(--warning); }
 
         /* Premium Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: nowrap;
+        }
         .action-btn {
             padding: 8px 16px;
             border-radius: var(--border-radius);
             border: none;
-            cursor: pointer;
-            font-size: 0.85rem;
+            font-size: 0.875rem;
             font-weight: 500;
-            margin-right: 8px;
-            transition: var(--transition-bounce);
+            cursor: pointer;
+            transition: var(--transition);
             display: inline-flex;
             align-items: center;
             gap: 6px;
+            white-space: nowrap;
         }
         .action-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
         .action-btn:active { transform: translateY(0); }
@@ -407,12 +412,14 @@
                         </td>
                         <td><span class="status-badge ${statusClass}">${statusText}</span></td>
                         <td>
-                            <button class="action-btn btn-edit" onclick="editProduct('${p.id}')">
-                                <i class="fa-solid fa-pen"></i> Edit
-                            </button>
-                            <button class="action-btn btn-delete" onclick="deleteProduct('${p.id}')">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
+                            <div class="action-buttons">
+                                <button class="action-btn btn-edit" onclick="editProduct('${p.id}')">
+                                    <i class="fa-solid fa-pen"></i> Edit
+                                </button>
+                                <button class="action-btn btn-delete" onclick="deleteProduct('${p.id}')">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 `;

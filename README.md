@@ -46,10 +46,19 @@ This project demonstrates:
 * **Cart Badge** in navbar showing item count
 
 ### Farmer Capabilities
-* **Product Management** – Create, update, soft-delete listings
-* **Image Uploads** to Supabase Storage (JPEG, PNG, WebP, max 5MB)
+* **Product Management** – Create, update, soft-delete listings via `add-product.html` and `my-products.html`
+* **Image Uploads** to Supabase Storage with preview (JPEG, PNG, WebP, max 5MB)
+* **Inventory Dashboard** (`my-products.html`) with:
+  - Product table with stock level visual indicators
+  - Stats cards (Total, Active, Low Stock, Out of Stock)
+  - Status filters (All, Active, Inactive, Low Stock)
+  - Edit and soft-delete actions
+* **Order Fulfillment** (`farmer-orders.html`) with:
+  - Order status management (Confirm → Ship → Deliver)
+  - Customer details display (name, phone, address)
+  - Revenue statistics and order counts by status
+  - Filter orders by status (New, Confirmed, Shipped, Delivered)
 * **Revenue Analytics** with total sales and order tracking
-* **Active Listings Dashboard** showing stock levels
 
 ### Buyer Capabilities
 * **Browse Marketplace** with filters and search
@@ -95,10 +104,12 @@ Farmer Marketplace/
 ├── product-details.html    # Individual product view
 ├── cart.html               # Shopping cart management
 ├── checkout.html           # Order placement
-├── orders.html             # Order history (buyer & farmer views)
+├── orders.html             # Order history (buyer view)
+├── farmer-orders.html      # Order fulfillment (farmer view)
 ├── dashboard.html          # Role-based analytics dashboard
 ├── profile.html            # User profile management
-├── my-products.html        # Farmer product management
+├── add-product.html        # Create new product (farmer only)
+├── my-products.html        # Manage products (farmer only)
 ├── about.html              # About page
 ├── contact.html            # Contact form with EmailJS
 ├── components/
@@ -116,7 +127,8 @@ Farmer Marketplace/
 │   ├── product-details.css # PDP styles
 │   └── profile.css         # Profile page styles
 ├── js/
-│   ├── supabase.js         # Supabase client configuration
+│   ├── config.js           # Centralized configuration (Supabase + EmailJS)
+│   ├── supabase.js         # Supabase client initialization
 │   ├── auth.js             # Authentication functions
 │   ├── products.js         # Product CRUD + marketplace
 │   ├── cart.js             # Cart management
@@ -125,9 +137,8 @@ Farmer Marketplace/
 │   ├── profile.js          # Profile updates
 │   ├── utils.js            # Helper utilities (toast, loader, formatting)
 │   └── main.js             # Component injection + global handlers
-├── email-templates/        # HTML email templates
 ├── supabase-schema.sql     # Database schema + RLS policies
-└── demo-products.sql       # Seed data for testing
+└── README.md               # Project documentation
 ```
 
 ---
@@ -256,26 +267,42 @@ Creates and exports the Supabase client instance using CDN-loaded SDK.
 * Supabase account (free tier works)
 * Web server (Live Server, npx serve, or similar) – required for component injection
 
-### 1. Supabase Configuration
+### 1. Configuration
 
-1. Create a new Supabase project
-2. Run `supabase-schema.sql` in the SQL Editor to create tables and RLS policies
-3. Create a public Storage bucket named `product-images`
-4. Copy your project URL and anon key
-5. Update `js/supabase.js` with your credentials:
+All credentials are centralized in `js/config.js`. Update this file with your actual keys:
 
 ```javascript
-const SUPABASE_URL = 'https://your-project.supabase.co';
-const SUPABASE_ANON_KEY = 'your-anon-key';
+const CONFIG = {
+    // Supabase Configuration (from https://app.supabase.com/project/_/settings/api)
+    SUPABASE_URL: 'https://your-project.supabase.co',
+    SUPABASE_ANON_KEY: 'your-anon-key',
+    
+    // EmailJS Configuration (from https://dashboard.emailjs.com/admin) - Optional
+    EMAILJS_PUBLIC_KEY: 'your-emailjs-public-key',
+    EMAILJS_SERVICE_ID: 'your-service-id',
+    EMAILJS_TEMPLATE_ID: 'your-template-id',
+    EMAILJS_CONFIRMATION_TEMPLATE_ID: 'your-confirmation-template-id'
+};
 ```
 
-### 2. Seed Demo Data (Optional)
+### 2. Supabase Setup
 
-1. Sign up as a farmer through the UI
-2. Get the farmer's UUID from Supabase Auth → Users
-3. Run `demo-products.sql` with the farmer's UUID to create sample products
+1. Create a new Supabase project
+2. Run `supabase-schema.sql` in the SQL Editor to create:
+   - All database tables
+   - Row Level Security policies
+   - Database functions (cart increment, stock decrement, user profile creation)
+3. Create a public Storage bucket named `product-images`
+4. Set Storage policies to allow farmers to upload to their own folder
 
-### 3. Run Locally
+### 3. EmailJS Setup (Optional - for contact form)
+
+1. Sign up at [EmailJS](https://www.emailjs.com/)
+2. Create an email service and email templates
+3. Update `js/config.js` with your EmailJS credentials
+4. Contact form will send emails to admin and confirmation to user
+
+### 4. Run Locally
 
 ```bash
 # Using npx serve
